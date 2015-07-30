@@ -1,0 +1,5 @@
+/.php-version
+/composer.phar
+/coverage
+/docs
+/vendor

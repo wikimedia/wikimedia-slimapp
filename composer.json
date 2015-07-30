@@ -1,0 +1,47 @@
+{
+	"name": "mediawiki/slimapp",
+	"description": "Common classes to help with creating an application using the Slim micro framework and Twig template engine.",
+	"license": "GPL-3.0+",
+	"homepage": "https://github.com/wikimedia/wikimedia-slimapp",
+	"authors": [
+		{
+			"name": "Bryan Davis",
+			"email": "bd808@wikimedia.org"
+		},
+		{
+			"name": "Niharika Kohli",
+			"email": "niharikakohli29@gmail.com"
+		}
+	],
+	"require": {
+		"php": ">=5.3.7",
+		"phpmailer/phpmailer": "~5.2.8",
+		"psr/log": "~1.0.0",
+		"slim/slim": "~2.4",
+		"slim/views": "~0.1",
+		"twig/twig": "~1.16",
+		"wikimedia/simplei18n": "~1.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"Wikimedia\\Slimapp\\": "src/"
+		}
+	},
+	"require-dev": {
+		"jakub-onderka/php-parallel-lint": "~0.9",
+		"phpunit/phpunit": "~4.6",
+		"mediawiki/mediawiki-codesniffer": "~0.3"
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Wikimedia\\Slimapp\\": "tests/"
+		}
+	},
+	"scripts": {
+		"test": [
+			"parallel-lint . --exclude vendor",
+			"phpunit $PHPUNIT_ARGS",
+			"phpcs -p"
+		]
+	}
+}
