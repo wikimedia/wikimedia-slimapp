@@ -72,8 +72,6 @@ abstract class AbstractApp {
 			$settings
 		) );
 
-		$this->slim = new \Slim\Slim( $settings );
-
 		// Slim does not natively understand being behind a proxy. If not
 		// corrected template links created via siteUrl() may use the wrong
 		// Protocol (http instead of https).
