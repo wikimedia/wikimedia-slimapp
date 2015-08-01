@@ -1,5 +1,5 @@
 {
-	"name": "mediawiki/slimapp",
+	"name": "wikimedia/slimapp",
 	"description": "Common classes to help with creating an application using the Slim micro framework and Twig template engine.",
 	"license": "GPL-3.0+",
 	"homepage": "https://github.com/wikimedia/wikimedia-slimapp",
