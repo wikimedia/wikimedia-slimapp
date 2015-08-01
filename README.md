@@ -16,6 +16,7 @@ configuration principle of configuration via environment variables.
 
 The following variables can be optionally provided:
 
+* LOG_CHANNEL = Logger name (default: `app`)
 * LOG_LEVEL = PSR-3 logging level (default: `notice`)
 * LOG_FILE = fopen()-compatible filename or stream URI (default: `php://stderr`)
 * CACHE_DIR = Directory to cache twig templates (default: `data/cache`)

@@ -52,6 +52,7 @@ abstract class AbstractApp {
 			array(
 				'mode' => 'production',
 				'debug' => false,
+				'log.channel' => Config::getStr( 'LOG_CHANNEL', 'app' ),
 				'log.level' => Config::getStr(
 					'LOG_LEVEL', \Psr\Log\LogLevel::NOTICE
 				),
@@ -87,6 +88,36 @@ abstract class AbstractApp {
 		}
 
 		$this->configureSlim( $this->slim );
+
+		// Replace default logger with monolog.
+		// Done before configureIoc() so subclasses can easily switch it again
+		// if desired.
+		$this->slim->container->singleton( 'log', function ( $c ) {
+			// Convert string level to Monolog integer value
+			$level = strtoupper( $c->settings['log.level'] );
+			$level = constant( "\Monolog\Logger::{$level}" );
+
+			$log = new \Monolog\Logger( $c->settings['log.channel'] );
+			$handler = new \Monolog\Handler\Udp2logHandler(
+				$c->settings['log.file'],
+				$level
+			);
+			$handler->setFormatter( new \Monolog\Formatter\LogstashFormatter(
+				$c->settings['log.channel'], null, null, '',
+				\Monolog\Formatter\LogstashFormatter::V1
+			) );
+			$handler->pushProcessor(
+				new \Monolog\Processor\PsrLogMessageProcessor()
+			);
+			$handler->pushProcessor(
+				new \Monolog\Processor\ProcessIdProcessor()
+			);
+			$handler->pushProcessor( new \Monolog\Processor\UidProcessor() );
+			$handler->pushProcessor( new \Monolog\Processor\WebProcessor() );
+			$log->pushHandler( $handler );
+			return $log;
+		} );
+
 		$this->configureIoc( $this->slim->container );
 		$this->configureView( $this->slim->view );
 

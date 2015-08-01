@@ -14,9 +14,10 @@
 		}
 	],
 	"require": {
+		"bd808/monolog-udp2log-handler": "~1.0",
+		"monolog/monolog": "~1.15",
 		"php": ">=5.3.7",
-		"phpmailer/phpmailer": "~5.2.8",
-		"psr/log": "~1.0.0",
+		"phpmailer/phpmailer": "~5.2",
 		"slim/slim": "~2.4",
 		"slim/views": "~0.1",
 		"twig/twig": "~1.16",
