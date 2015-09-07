@@ -23,7 +23,7 @@
 
 namespace Wikimedia\Slimapp\Auth;
 
-use \PDOException;
+use PDOException;
 
 /**
  * Data access object for users.

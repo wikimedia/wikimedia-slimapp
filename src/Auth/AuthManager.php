@@ -109,22 +109,31 @@ class AuthManager {
 		$user = $this->manager->getUserData( $uname );
 		$check = Password::comparePasswordToHash( $password, $user->getPassword() );
 		if ( $check && !$user->isBlocked() ) {
-			// clear session
-			foreach ( $_SESSION as $key => $value ) {
-				unset( $_SESSION[$key] );
-			}
-
-			// generate new session id
-			session_regenerate_id( true );
-
-			// store user info in session
-			$this->setUser( $user );
-
+			$this->login( $user );
 			return true;
 
 		} else {
 			return false;
 		}
+	}
+
+
+	/**
+	 * Add authentication.
+	 *
+	 * @param UserData $user
+	 */
+	public function login( UserData $user ) {
+		// clear session
+		foreach ( $_SESSION as $key => $value ) {
+			unset( $_SESSION[$key] );
+		}
+
+		// generate new session id
+		session_regenerate_id( true );
+
+		// store user info in session
+		$this->setUser( $user );
 	}
 
 
