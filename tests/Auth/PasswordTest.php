@@ -61,4 +61,4 @@ class PasswordTest extends \PHPUnit_Framework_TestCase {
 		$this->assertEquals( 16, strlen( $p ) );
 	}
 
-} //end PasswordTest
+}

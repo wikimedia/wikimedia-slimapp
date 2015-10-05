@@ -27,4 +27,4 @@ date_default_timezone_set( 'UTC' );
 // populate $_ENV from .env if present
 if ( is_readable( __DIR__ . '/../.env.test' ) ) {
 	\Wikimedia\Slimapp\Config::load( __DIR__ . '/../.env.test' );
-} //end if .env
+}

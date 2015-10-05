@@ -74,4 +74,4 @@ class ConfigTest extends \PHPUnit_Framework_TestCase {
 		$this->assertSame( false, Config::getDate( $name ) );
 	}
 
-} //end ConfigTest
+}

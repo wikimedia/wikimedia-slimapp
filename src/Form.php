@@ -424,7 +424,7 @@ class Form {
 		}
 
 		return implode( '&', $payload );
-	} //end urlEncode
+	} // end urlEncode
 
 	/**
 	 * Merge parameters into current query string.

@@ -50,13 +50,11 @@ abstract class RsaSha1 extends SignatureMethod {
 	// (1) do a lookup in a table of trusted certs keyed off of consumer
 	// (2) fetch via http using a url provided by the requester
 	// (3) some sort of specific discovery code based on request
-	//
 	// Either way should return a string representation of the certificate
 	abstract protected function fetchPublicCert( Request $request );
 
 	// Up to the SP to implement this lookup of keys. Possible ideas are:
 	// (1) do a lookup in a table of trusted certs keyed off of consumer
-	//
 	// Either way should return a string representation of the certificate
 	abstract protected function fetchPrivateCert( Request $request );
 

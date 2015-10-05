@@ -4,7 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "21e4a4385db80e09d49bc336571e0f91",
+    "hash": "6edd7ea54ec73cb281e8cb4e58e4df69",
+    "content-hash": "e68c39e706c422d0b2b51fc87dc8dee3",
     "packages": [
         {
             "name": "bd808/monolog-udp2log-handler",
@@ -537,23 +538,23 @@
         },
         {
             "name": "mediawiki/mediawiki-codesniffer",
-            "version": "v0.3.0",
+            "version": "v0.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wikimedia/mediawiki-tools-codesniffer.git",
-                "reference": "cb25db9fba6b3d3b6cc6ee95a87772ff1302929b"
+                "reference": "0104c7063441e179ee0a6598e0a028223bf480dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wikimedia/mediawiki-tools-codesniffer/zipball/cb25db9fba6b3d3b6cc6ee95a87772ff1302929b",
-                "reference": "cb25db9fba6b3d3b6cc6ee95a87772ff1302929b",
+                "url": "https://api.github.com/repos/wikimedia/mediawiki-tools-codesniffer/zipball/0104c7063441e179ee0a6598e0a028223bf480dd",
+                "reference": "0104c7063441e179ee0a6598e0a028223bf480dd",
                 "shasum": ""
             },
             "require": {
-                "squizlabs/php_codesniffer": "2.3.0"
+                "squizlabs/php_codesniffer": "2.3.4"
             },
             "require-dev": {
-                "jakub-onderka/php-parallel-lint": "0.8.*",
+                "jakub-onderka/php-parallel-lint": "0.9.*",
                 "phpunit/phpunit": "~4.1.0"
             },
             "type": "library",
@@ -567,7 +568,7 @@
                 "codesniffer",
                 "mediawiki"
             ],
-            "time": "2015-06-19 16:36:59"
+            "time": "2015-09-26 21:34:16"
         },
         {
             "name": "phpdocumentor/reflection-docblock",
@@ -1419,16 +1420,16 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "2.3.0",
+            "version": "2.3.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "5046b0e01c416fc2b06df961d0673c85bcdc896c"
+                "reference": "11a2545c44a5915f883e2e5ec12e14ed345e3ab2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/5046b0e01c416fc2b06df961d0673c85bcdc896c",
-                "reference": "5046b0e01c416fc2b06df961d0673c85bcdc896c",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/11a2545c44a5915f883e2e5ec12e14ed345e3ab2",
+                "reference": "11a2545c44a5915f883e2e5ec12e14ed345e3ab2",
                 "shasum": ""
             },
             "require": {
@@ -1489,7 +1490,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2015-03-04 02:07:03"
+            "time": "2015-09-09 00:18:50"
         },
         {
             "name": "symfony/yaml",

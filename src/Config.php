@@ -95,7 +95,7 @@ class Config {
 
 				// Also store in process env vars
 				putenv( "{$key}={$value}" );
-		} //end foreach settings
+		} // end foreach settings
 	}
 
 }
