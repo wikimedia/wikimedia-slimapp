@@ -54,7 +54,7 @@ class Password {
 			$check = md5( $plainText );
 		}
 
-		return $check === $hash;
+		return self::hashEquals( $hash, $check );
 	}
 
 
@@ -239,6 +239,46 @@ class Password {
 		}
 
 		return $password;
+	}
+
+
+	/**
+	 * Check whether a user-provided string is equal to a fixed-length secret
+	 * string without revealing bytes of the secret string through timing
+	 * differences.
+	 *
+	 * Implementation for PHP deployments which do not natively have
+	 * hash_equals taken from MediaWiki's hash_equals() polyfill function.
+	 *
+	 * @param string $known Fixed-length secret string to compare against
+	 * @param string $input User-provided string
+	 * @return bool True if the strings are the same, false otherwise
+	 */
+	public static function hashEquals( $known, $input ) {
+		if ( function_exists( 'hash_equals' ) ) {
+			return hash_equals( $known, $input );
+
+		} else {
+			// hash_equals() polyfill taken from MediaWiki
+			if ( !is_string( $known ) ) {
+				return false;
+			}
+			if ( !is_string( $input ) ) {
+				return false;
+			}
+
+			$len = strlen( $known );
+			if ( $len !== strlen( $input ) ) {
+				return false;
+			}
+
+			$result = 0;
+			for ( $i = 0; $i < $len; $i++ ) {
+				$result |= ord( $known[$i] ) ^ ord( $input[$i] );
+			}
+
+			return $result === 0;
+		}
 	}
 
 
