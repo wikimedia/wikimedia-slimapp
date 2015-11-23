@@ -232,12 +232,38 @@ abstract class AbstractDao {
 	 * @return string Where clause or empty string
 	 */
 	protected static function buildWhere( array $where, $conjunction = 'AND' ) {
-		if ( $where ) {
-			return 'WHERE (' . implode( ") {$conjunction} (", $where ) . ') ';
+		return static::buildBooleanClause( 'WHERE', $having, $conjunction );
+	}
+
+	/**
+	 * Construct a having clause.
+	 * @param array $having List of conditions
+	 * @param string $conjunction Joining operation ('and' or 'or')
+	 * @return string Having clause or empty string
+	 */
+	protected static function buildHaving(
+		array $having, $conjunction = 'AND'
+	) {
+		return static::buildBooleanClause( 'HAVING', $having, $conjunction );
+	}
+
+	/**
+	 * Construct a boolean clause.
+	 * @param string $type Clause type (eg 'WHERE', 'HAVING')
+	 * @param array $expressions List of expressions
+	 * @param string $conjunction Joining operation ('AND' or 'OR')
+	 * @return string Clause or empty string
+	 */
+	protected static function buildBooleanClause(
+		$type, array $expressions, $conjunction = 'AND'
+	) {
+		if ( $expressions ) {
+			return "{$type} (" .
+				implode( ") {$conjunction} (", $expressions ) .
+				') ';
 		}
 		return '';
 	}
-
 
 	/**
 	 * Create a string by joining all arguments with spaces.
