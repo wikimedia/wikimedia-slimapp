@@ -92,6 +92,17 @@ class Form {
 			unset( $options['validate'] );
 		}
 
+		if ( $filter === \FILTER_CALLBACK ) {
+			if ( !isset( $options['callback'] ) ||
+				!is_callable( $options['callback'] )
+			) {
+				throw new \InvalidArgumentException(
+					'FILTER_CALLBACK requires a valid callback.'
+				);
+			}
+			$options = $options['callback'];
+		}
+
 		$this->params[$name] = array(
 			'filter'   => $filter,
 			'flags'    => $flags,
@@ -297,6 +308,40 @@ class Form {
 	public function requireInArrayArray( $name, $valids, $options = null ) {
 		return $this->requireInArray(
 			$name, $values, self::wantArray( $options )
+		);
+	}
+
+	/**
+	 * Add an input expectation for a DateTime object.
+	 *
+	 * @param string $name Parameter to expect
+	 * @param string $format Expected date/time format
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 * @see DateTime::createFromFormat
+	 */
+	public function expectDateTime( $name, $format, $options = null ) {
+		$options = ( is_array( $options ) ) ? $options : array();
+		$options['callback'] = function ( $value ) use ( $format ) {
+			try {
+				$date = \DateTime::createFromFormat( $format, $value );
+				$formatErrors = \DateTime::getLastErrors();
+				if ( $formatErrors['error_count'] == 0 &&
+					$formatErrors['warning_count'] == 0
+				) {
+					return $date;
+				}
+			} catch ( \Exception $ignored ) {
+				// no-op
+			}
+			return false;
+		};
+		return $this->expect( $name, \FILTER_CALLBACK, $options );
+	}
+
+	public function requireDateTime( $name, $format, $options = null ) {
+		return $this->expectDateTime( $name, $format,
+			self::required( $options )
 		);
 	}
 

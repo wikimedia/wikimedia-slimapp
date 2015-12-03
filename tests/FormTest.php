@@ -148,6 +148,44 @@ class FormTest extends \PHPUnit_Framework_TestCase {
 		$this->assertContains( 'int[2]', $form->getErrors() );
 	}
 
+	/**
+	 * @dataProvider provideExpectDateTime
+	 * @param string $input
+	 * @param string $format
+	 * @param bool $valid
+	 */
+	public function testExpectDateTime( $input, $format, $valid ) {
+		$_POST['date'] = $input;
+		$form = new Form();
+		$form->requireDateTime( 'date', $format );
+		if ( $valid ) {
+			$this->assertTrue( $form->validate(), 'Form should be valid' );
+			$vals = $form->getValues();
+			$this->assertArrayHasKey( 'date', $vals );
+			$this->assertInstanceOf( 'DateTime', $vals['date'] );
+			$this->assertEquals( $input, $vals['date']->format( $format ) );
+			$this->assertNotContains( 'date', $form->getErrors() );
+		} else {
+			$this->assertFalse( $form->validate(), 'Form should be invalid' );
+			$vals = $form->getValues();
+			$this->assertArrayHasKey( 'date', $vals );
+			$this->assertNull( $vals['date'] );
+			$this->assertContains( 'date', $form->getErrors() );
+		}
+	}
+
+	public function provideExpectDateTime() {
+		return array(
+			array( '2014-12-08', 'Y-m-d', true ),
+			array( '2014-12-08 23:02', 'Y-m-d H:i', true ),
+			array( '11:37', 'H:i', true ),
+			array( '2014-13-1', 'Y-m-d', false ),
+			array( '2014-2-29', 'Y-m-d', false ),
+			array( '2014-12-08 23:02', 'Y-m-d h:i', false ),
+			array( '27:37', 'H:i', false ),
+		);
+	}
+
 	public function testEncodeBasic() {
 		$input = array(
 			'foo' => 1,
