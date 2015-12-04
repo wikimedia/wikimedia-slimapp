@@ -232,7 +232,7 @@ abstract class AbstractDao {
 	 * @return string Where clause or empty string
 	 */
 	protected static function buildWhere( array $where, $conjunction = 'AND' ) {
-		return static::buildBooleanClause( 'WHERE', $having, $conjunction );
+		return static::buildBooleanClause( 'WHERE', $where, $conjunction );
 	}
 
 	/**
