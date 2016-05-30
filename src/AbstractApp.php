@@ -20,7 +20,6 @@
  * @file
  * @copyright © 2015 Bryan Davis, Wikimedia Foundation and contributors.
  */
-
 namespace Wikimedia\Slimapp;
 
 /**
@@ -41,13 +40,13 @@ abstract class AbstractApp {
 	 */
 	protected $slim;
 
+
 	/**
 	 * @param string $deployDir Full path to code deployment
 	 * @param array $settings Associative array of application settings
 	 */
 	public function __construct( $deployDir, array $settings = array() ) {
 		$this->deployDir = $deployDir;
-
 		$this->slim = new \Slim\Slim( array_merge(
 			array(
 				'mode' => 'production',
@@ -72,23 +71,19 @@ abstract class AbstractApp {
 			),
 			$settings
 		) );
-
 		// Slim does not natively understand being behind a proxy. If not
 		// corrected template links created via siteUrl() may use the wrong
 		// Protocol (http instead of https).
 		if ( getenv( 'HTTP_X_FORWARDED_PROTO' ) ) {
 			$proto = getenv( 'HTTP_X_FORWARDED_PROTO' );
 			$this->slim->environment['slim.url_scheme'] = $proto;
-
 			$port = getenv( 'HTTP_X_FORWARDED_PORT' );
 			if ( $port === false ) {
 				$port = ( $proto == 'https' ) ? '443' : '80';
 			}
 			$this->slim->environment['SERVER_PORT'] = $port;
 		}
-
 		$this->configureSlim( $this->slim );
-
 		// Replace default logger with monolog.
 		// Done before configureIoc() so subclasses can easily switch it again
 		// if desired.
@@ -96,7 +91,6 @@ abstract class AbstractApp {
 			// Convert string level to Monolog integer value
 			$level = strtoupper( $c->settings['log.level'] );
 			$level = constant( "\Monolog\Logger::{$level}" );
-
 			$log = new \Monolog\Logger( $c->settings['log.channel'] );
 			$handler = new \Monolog\Handler\Udp2logHandler(
 				$c->settings['log.file'],
@@ -117,35 +111,11 @@ abstract class AbstractApp {
 			$log->pushHandler( $handler );
 			return $log;
 		} );
-
 		$this->configureIoc( $this->slim->container );
 		$this->configureView( $this->slim->view );
-
-		// Add headers to all responses:
-		// * Vary: Cookie to help upstream caches to the right thing
-		// * X-Frame-Options: DENY
-		// * Content-Security-Policy to help protect against XSS attacks
-		// * Content-Type: text/html; charset=UTF-8
-		$headerMiddleware = new HeaderMiddleware( array(
-			'Vary' => 'Cookie',
-			'X-Frame-Options' => 'DENY',
-			'Content-Security-Policy' =>
-				"default-src 'self'; " .
-				"frame-src 'none'; " .
-				"object-src 'none'; " .
-				// Needed for css data:... sprites
-				"img-src 'self' data:; " .
-				// Needed for jQuery and Modernizr feature detection
-				"style-src 'self' 'unsafe-inline'",
-			// Don't forget to override this for any content that is not
-			// actually HTML (e.g. json)
-			'Content-Type' => 'text/html; charset=UTF-8',
-		) );
-		$this->slim->add( $headerMiddleware );
-
+		$this->slim->add( $this->setHeaderMiddleware() );
 		// Add CSRF protection for POST requests
 		$this->slim->add( new CsrfMiddleware() );
-
 		$this->configureRoutes( $this->slim );
 	}
 
@@ -197,6 +167,7 @@ abstract class AbstractApp {
 
 	/**
 	 * Add a redirect route to the app.
+	 *
 	 * @param \Slim\Slim $slim App
 	 * @param string $name Page name
 	 * @param string $to Redirect target route name
@@ -206,7 +177,6 @@ abstract class AbstractApp {
 		\Slim\Slim $slim, $name, $to, $routeName = null
 	) {
 		$routeName = $routeName ?: $name;
-
 		$slim->get( $name, function () use ( $slim, $name, $to ) {
 			$slim->flashKeep();
 			$slim->redirect( $slim->urlFor( $to ) );
@@ -216,6 +186,7 @@ abstract class AbstractApp {
 
 	/**
 	 * Add a static template route to the app.
+	 *
 	 * @param \Slim\Slim $slim App
 	 * @param string $name Page name
 	 * @param string $routeName Name for the route
@@ -224,9 +195,37 @@ abstract class AbstractApp {
 		\Slim\Slim $slim, $name, $routeName = null
 	) {
 		$routeName = $routeName ?: $name;
-
 		$slim->get( $name, function () use ( $slim, $name ) {
 			$slim->render( "{$name}.html" );
 		} )->name( $routeName );
+	}
+
+
+	/**
+	 * Set header middleware config
+	 *
+	 * @return \Wikimedia\Slimapp\HeaderMiddleware Header middleware for app
+	 */
+	protected function setHeaderMiddleware() {
+		// Add headers to all responses:
+		// * Vary: Cookie to help upstream caches to the right thing
+		// * X-Frame-Options: DENY
+		// * Content-Security-Policy to help protect against XSS attacks
+		// * Content-Type: text/html; charset=UTF-8
+		return new HeaderMiddleware( array(
+			'Vary' => 'Cookie',
+			'X-Frame-Options' => 'DENY',
+			'Content-Security-Policy' =>
+				"default-src 'self'; " .
+				"frame-src 'none'; " .
+				"object-src 'none'; " .
+				// Needed for css data:... sprites
+				"img-src 'self' data:; " .
+				// Needed for jQuery and Modernizr feature detection
+				"style-src 'self' 'unsafe-inline'",
+			// Don't forget to override this for any content that is not
+			// actually HTML (e.g. json)
+			'Content-Type' => 'text/html; charset=UTF-8',
+		) );
 	}
 }
