@@ -121,27 +121,9 @@ abstract class AbstractApp {
 		$this->configureIoc( $this->slim->container );
 		$this->configureView( $this->slim->view );
 
-		// Add headers to all responses:
-		// * Vary: Cookie to help upstream caches to the right thing
-		// * X-Frame-Options: DENY
-		// * Content-Security-Policy to help protect against XSS attacks
-		// * Content-Type: text/html; charset=UTF-8
-		$headerMiddleware = new HeaderMiddleware( array(
-			'Vary' => 'Cookie',
-			'X-Frame-Options' => 'DENY',
-			'Content-Security-Policy' =>
-				"default-src 'self'; " .
-				"frame-src 'none'; " .
-				"object-src 'none'; " .
-				// Needed for css data:... sprites
-				"img-src 'self' data:; " .
-				// Needed for jQuery and Modernizr feature detection
-				"style-src 'self' 'unsafe-inline'",
-			// Don't forget to override this for any content that is not
-			// actually HTML (e.g. json)
-			'Content-Type' => 'text/html; charset=UTF-8',
-		) );
-		$this->slim->add( $headerMiddleware );
+		$this->slim->add(
+			new HeaderMiddleware( $this->configureHeaderMiddleware() )
+		);
 
 		// Add CSRF protection for POST requests
 		$this->slim->add( new CsrfMiddleware() );
@@ -228,5 +210,37 @@ abstract class AbstractApp {
 		$slim->get( $name, function () use ( $slim, $name ) {
 			$slim->render( "{$name}.html" );
 		} )->name( $routeName );
+	}
+
+
+	/**
+	 * Configure the default HeaderMiddleware installed for all routes.
+	 *
+	 * Default configuration adds these headers:
+	 * - "Vary: Cookie" to help upstream caches to the right thing
+	 * - "X-Frame-Options: DENY"
+	 * - A fairly strict 'self' only Content-Security-Policy to help protect
+	 *   against XSS attacks
+	 * - "Content-Type: text/html; charset=UTF-8"
+	 *
+	 * @return array
+	 */
+	protected function configureHeaderMiddleware() {
+		// Add headers to all responses:
+		return array(
+			'Vary' => 'Cookie',
+			'X-Frame-Options' => 'DENY',
+			'Content-Security-Policy' =>
+				"default-src 'self'; " .
+				"frame-src 'none'; " .
+				"object-src 'none'; " .
+				// Needed for css data:... sprites
+				"img-src 'self' data:; " .
+				// Needed for jQuery and Modernizr feature detection
+				"style-src 'self' 'unsafe-inline'",
+			// Don't forget to override this for any content that is not
+			// actually HTML (e.g. json)
+			'Content-Type' => 'text/html; charset=UTF-8',
+		);
 	}
 }
