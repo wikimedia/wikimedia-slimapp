@@ -54,7 +54,6 @@ class Mailer {
 		'XMailer' => 'Wikimedia Grants review system',
 	);
 
-
 	/**
 	 * @param array $settings Configuration settings for PHPMailer
 	 * @param LoggerInterface $logger Log channel
@@ -64,7 +63,6 @@ class Mailer {
 		$settings = is_array( $settings ) ? $settings : array();
 		$this->settings = array_merge( $this->settings, $settings );
 	}
-
 
 	/**
 	 * @param string $to Recipent(s)
@@ -88,7 +86,6 @@ class Mailer {
 			) );
 		}
 	}
-
 
 	/**
 	 * Create and configure a PHPMailer instance.

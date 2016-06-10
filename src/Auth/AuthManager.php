@@ -39,14 +39,12 @@ class AuthManager {
 	 */
 	protected $manager;
 
-
 	/**
 	 * @param UserManager $manager
 	 */
 	public function __construct( UserManager $manager ) {
 		$this->manager = $manager;
 	}
-
 
 	/**
 	 * Get the current user's information
@@ -61,7 +59,6 @@ class AuthManager {
 		}
 	}
 
-
 	/**
 	 * Get the current user's Id.
 	 * @return int|bool Numeric user id or false if not available
@@ -71,7 +68,6 @@ class AuthManager {
 		return $user ? $user->getId() : false;
 	}
 
-
 	/**
 	 * Store the user's information.
 	 * @param UserData $user User information
@@ -79,7 +75,6 @@ class AuthManager {
 	public function setUser( UserData $user ) {
 		$_SESSION[self::USER_SESSION_KEY] = $user;
 	}
-
 
 	/**
 	 * Is the user authenticated?
@@ -89,7 +84,6 @@ class AuthManager {
 		return $this->getUserData() !== null;
 	}
 
-
 	/**
 	 * Is the user anonymous?
 	 * @return bool True if the user is not authenticated, false otherwise
@@ -97,7 +91,6 @@ class AuthManager {
 	public function isAnonymous() {
 		return $this->getUserData() === null;
 	}
-
 
 	/**
 	 * Attempt to authenticate a user.
@@ -117,7 +110,6 @@ class AuthManager {
 		}
 	}
 
-
 	/**
 	 * Add authentication.
 	 *
@@ -135,7 +127,6 @@ class AuthManager {
 		// store user info in session
 		$this->setUser( $user );
 	}
-
 
 	/**
 	 * Remove authentication.

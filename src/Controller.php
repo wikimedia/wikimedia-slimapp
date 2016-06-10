@@ -61,7 +61,6 @@ class Controller {
 	 */
 	protected $i18nctx;
 
-
 	/**
 	 * @param \Slim\Slim $slim
 	 */
@@ -69,7 +68,6 @@ class Controller {
 		$this->slim = $slim ?: \Slim\Slim::getInstance();
 		$this->form = new Form( $this->slim->log );
 	}
-
 
 	/**
 	 * Set default DAO
@@ -79,7 +77,6 @@ class Controller {
 		$this->dao = $dao;
 	}
 
-
 	/**
 	 * Set default form
 	 * @param Form $form
@@ -87,7 +84,6 @@ class Controller {
 	public function setForm( Form $form ) {
 		$this->form = $form;
 	}
-
 
 	/**
 	 * Set mailer
@@ -97,7 +93,6 @@ class Controller {
 		$this->mailer = $mailer;
 	}
 
-
 	/**
 	 * Set i18n context
 	 * @param I18nContext $i18nctx
@@ -105,7 +100,6 @@ class Controller {
 	public function setI18nContext( I18nContext $i18nctx ) {
 		$this->i18nctx = $i18nctx;
 	}
-
 
 	/**
 	 * Default request handler.
@@ -115,7 +109,6 @@ class Controller {
 	protected function handle() {
 		$this->slim->pass();
 	}
-
 
 	/**
 	 * Handle request by calling handleMethod on self.
@@ -133,7 +126,6 @@ class Controller {
 			call_user_func_array( array( $this, 'handle' ), $argv );
 		}
 	}
-
 
 	/**
 	 * Handle calls to undefined methods by proxying to the Slim member.
@@ -153,7 +145,6 @@ class Controller {
 		);
 	}
 
-
 	/**
 	 * Handle access to undefined member variables by proxying to the Slim
 	 * member.
@@ -164,7 +155,6 @@ class Controller {
 	public function __get( $name ) {
 		return $this->slim->{$name};
 	}
-
 
 	/**
 	 * Get a flash message.
@@ -180,7 +170,6 @@ class Controller {
 		}
 	}
 
-
 	/**
 	 * Get a message from the I18nContext.
 	 *
@@ -191,7 +180,6 @@ class Controller {
 	protected function msg( $key, $params = array() ) {
 		return $this->i18nctx->message( $key, $params );
 	}
-
 
 	/**
 	 * Compute pagination data.

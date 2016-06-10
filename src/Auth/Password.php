@@ -37,7 +37,6 @@ class Password {
 	 */
 	const BLOWFISH_PREFIX = '$2y$';
 
-
 	/**
 	 * Compare a plain text string to a stored password hash.
 	 *
@@ -57,7 +56,6 @@ class Password {
 		return self::hashEquals( $hash, $check );
 	}
 
-
 	/**
 	 * Encode a password for database storage.
 	 *
@@ -73,7 +71,6 @@ class Password {
 		$salt = self::blowfishSalt();
 		return crypt( $plainText, $salt );
 	}
-
 
 	/**
 	 * Generate a blowfish salt specification.
@@ -117,7 +114,6 @@ class Password {
 
 		return $output;
 	}
-
 
 	/**
 	 * Get N high entropy random bytes.
@@ -187,7 +183,6 @@ class Password {
 		return substr( $bytes, 0, $count );
 	}
 
-
 	/**
 	 * Check a salt specification to see if it is a blowfish crypt value.
 	 *
@@ -200,7 +195,6 @@ class Password {
 			substr( $hash, 0, $peek ) == self::BLOWFISH_PREFIX;
 	}
 
-
 	// @codingStandardsIgnoreStart : Line exceeds 100 characters
 	const CHARSET_PRINTABLE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!"#$%&\'()*+,-./:;<=>?@[\]^_`{|}~';
 	// @codingStandardsIgnoreEnd
@@ -209,7 +203,6 @@ class Password {
 	const CHARSET_DIGIT = '0123456789';
 	const CHARSET_ALPHANUM = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 	const CHARSET_SYMBOL = '!"#$%&\'()*+,-./:;<=>?@[\]^_`{|}~';
-
 
 	/**
 	 * Generate a random password.
@@ -240,7 +233,6 @@ class Password {
 
 		return $password;
 	}
-
 
 	/**
 	 * Check whether a user-provided string is equal to a fixed-length secret
@@ -280,7 +272,6 @@ class Password {
 			return $result === 0;
 		}
 	}
-
 
 	/**
 	 * Construction of utility class is not allowed.

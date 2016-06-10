@@ -31,7 +31,7 @@
 	"require-dev": {
 		"jakub-onderka/php-parallel-lint": "~0.9",
 		"phpunit/phpunit": "~4.6",
-		"mediawiki/mediawiki-codesniffer": "~0.4.0"
+		"mediawiki/mediawiki-codesniffer": "0.5.1|0.7.2"
 	},
 	"autoload-dev": {
 		"psr-4": {
@@ -39,10 +39,13 @@
 		}
 	},
 	"scripts": {
+		"lint": "parallel-lint . --exclude vendor",
+		"phpcs": "phpcs",
+		"fix": "phpcbf",
 		"test": [
-			"parallel-lint . --exclude vendor",
+			"composer lint",
 			"phpunit $PHPUNIT_ARGS",
-			"phpcs -p"
+			"composer phpcs"
 		]
 	}
 }

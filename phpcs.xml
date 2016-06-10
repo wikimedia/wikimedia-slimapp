@@ -1,11 +1,18 @@
 <?xml version="1.0"?>
 <ruleset name="wikimedia-slimapp">
-  <rule ref="vendor/mediawiki/mediawiki-codesniffer/MediaWiki"/>
   <file>.</file>
   <exclude-pattern>coverage</exclude-pattern>
   <exclude-pattern>vendor</exclude-pattern>
   <exclude-pattern>doc/html</exclude-pattern>
-  <arg name="report" value="full"/>
+
   <arg name="encoding" value="utf-8"/>
   <arg name="extensions" value="php"/>
+  <arg name="report" value="full"/>
+  <arg name="report" value="summary"/>
+  <arg value="sp"/>
+
+  <rule ref="vendor/mediawiki/mediawiki-codesniffer/MediaWiki"/>
+  <rule ref="Generic.Arrays.DisallowLongArraySyntax.Found">
+      <severity>0</severity>
+  </rule>
 </ruleset>

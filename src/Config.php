@@ -42,7 +42,6 @@ class Config {
 		return ( $val === null ) ? $default : $val;
 	}
 
-
 	/**
 	 * Get a string value
 	 * @param string $name Setting name
@@ -60,7 +59,6 @@ class Config {
 		return ( $var === false ) ? $default : $var;
 	}
 
-
 	/**
 	 * Get a date value
 	 * @param string $name Setting name
@@ -69,7 +67,6 @@ class Config {
 	public static function getDate( $name ) {
 		return strtotime( self::getStr( $name ) );
 	}
-
 
 	/**
 	 * Load configuration data from file

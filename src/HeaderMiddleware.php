@@ -49,7 +49,6 @@ class HeaderMiddleware extends \Slim\Middleware {
 		$this->headers = $headers;
 	}
 
-
 	public function call() {
 		$resp = $this->app->response;
 		foreach ( $this->headers as $name => $value ) {

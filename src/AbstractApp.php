@@ -131,14 +131,12 @@ abstract class AbstractApp {
 		$this->configureRoutes( $this->slim );
 	}
 
-
 	/**
 	 * Apply settings to the Slim application.
 	 *
 	 * @param \Slim\Slim $slim Application
 	 */
 	abstract protected function configureSlim( \Slim\Slim $slim );
-
 
 	/**
 	 * Configure inversion of control/dependency injection container.
@@ -147,7 +145,6 @@ abstract class AbstractApp {
 	 */
 	abstract protected function configureIoc( \Slim\Helper\Set $container );
 
-
 	/**
 	 * Configure view behavior.
 	 *
@@ -155,14 +152,12 @@ abstract class AbstractApp {
 	 */
 	abstract protected function configureView( \Slim\View $view );
 
-
 	/**
 	 * Configure routes to be handled by application.
 	 *
 	 * @param \Slim\Slim $slim Application
 	 */
 	abstract protected function configureRoutes( \Slim\Slim $slim );
-
 
 	/**
 	 * Main entry point for all requests.
@@ -175,7 +170,6 @@ abstract class AbstractApp {
 		register_shutdown_function( 'session_write_close' );
 		$this->slim->run();
 	}
-
 
 	/**
 	 * Add a redirect route to the app.
@@ -195,7 +189,6 @@ abstract class AbstractApp {
 		} )->name( $routeName );
 	}
 
-
 	/**
 	 * Add a static template route to the app.
 	 * @param \Slim\Slim $slim App
@@ -211,7 +204,6 @@ abstract class AbstractApp {
 			$slim->render( "{$name}.html" );
 		} )->name( $routeName );
 	}
-
 
 	/**
 	 * Configure the default HeaderMiddleware installed for all routes.

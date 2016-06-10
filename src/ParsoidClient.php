@@ -49,7 +49,6 @@ class ParsoidClient {
 	 */
 	protected $logger;
 
-
 	/**
 	 * @param string $url URL to parsoid API
 	 * @param string $cache Cache directory
