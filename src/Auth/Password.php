@@ -247,18 +247,18 @@ class Password {
 	 * @return bool True if the strings are the same, false otherwise
 	 */
 	public static function hashEquals( $known, $input ) {
+		if ( !is_string( $known ) ) {
+			return false;
+		}
+		if ( !is_string( $input ) ) {
+			return false;
+		}
+
 		if ( function_exists( 'hash_equals' ) ) {
 			return hash_equals( $known, $input );
 
 		} else {
 			// hash_equals() polyfill taken from MediaWiki
-			if ( !is_string( $known ) ) {
-				return false;
-			}
-			if ( !is_string( $input ) ) {
-				return false;
-			}
-
 			$len = strlen( $known );
 			if ( $len !== strlen( $input ) ) {
 				return false;
