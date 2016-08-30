@@ -18,7 +18,7 @@
  * <http://www.gnu.org/licenses/>.
  *
  * @file
- * @copyright © 2015 Bryan Davis, Wikimedia Foundation and contributors.
+ * @copyright © 2016 Bryan Davis, Wikimedia Foundation and contributors.
  */
 
 namespace Wikimedia\Slimapp;
@@ -26,11 +26,15 @@ namespace Wikimedia\Slimapp;
 use Psr\Log\LoggerInterface;
 
 /**
- * Simple client for sending wikitext to parsoid to be converted into html.
+ * Simple client for sending wikitext to RESTBase to be converted into html.
+ *
+ * The class name predates the switch from Parsoid to RESTBase as the backing
+ * API provider. RESTBase still talks to Parsoid under the covers.
  *
  * @author Bryan Davis <bd808@wikimedia.org>
- * @copyright © 2015 Bryan Davis, Wikimedia Foundation and contributors.
- * @see https://www.mediawiki.org/wiki/Parsoid/API
+ * @copyright © 2016 Bryan Davis, Wikimedia Foundation and contributors.
+ * @see https://www.mediawiki.org/wiki/RESTBase
+ * @see https://en.wikipedia.org/api/rest_v1/
  */
 class ParsoidClient {
 
@@ -50,7 +54,7 @@ class ParsoidClient {
 	protected $logger;
 
 	/**
-	 * @param string $url URL to parsoid API
+	 * @param string $url URL to RESTBase /transform/wikitext/to/html API
 	 * @param string $cache Cache directory
 	 * @param LoggerInterface $logger Log channel
 	 */
@@ -80,7 +84,7 @@ class ParsoidClient {
 	}
 
 	protected function cacheGet( $key ) {
-		$file = "{$this->cache}/{$key}.parsoid";
+		$file = "{$this->cache}/{$key}.restbase";
 		if ( file_exists( $file ) ) {
 			$this->logger->debug( 'Cache hit for [{key}]', array(
 				'method' => __METHOD__,
@@ -96,7 +100,7 @@ class ParsoidClient {
 	}
 
 	protected function cachePut( $key, $value ) {
-		$file = "{$this->cache}/{$key}.parsoid";
+		$file = "{$this->cache}/{$key}.restbase";
 		file_put_contents( $file, $value );
 		$this->logger->info( 'Cache put for [{key}]', array(
 			'method' => __METHOD__,
@@ -112,8 +116,8 @@ class ParsoidClient {
 	 */
 	protected function fetchParse( $text ) {
 		$parms = array(
-			'wt' => $text,
-			'body' => 1,
+			'wikitext' => $text,
+			'body_only' => 'true',
 		);
 		$ch = curl_init();
 		curl_setopt( $ch, CURLOPT_URL, $this->url );
@@ -121,13 +125,16 @@ class ParsoidClient {
 		curl_setopt( $ch, CURLOPT_POSTFIELDS, $parms );
 		curl_setopt( $ch, CURLOPT_ENCODING, '' );
 		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
-		curl_setopt( $ch, CURLOPT_USERAGENT, 'IEG Grant review 0.1' );
+		curl_setopt( $ch, CURLOPT_USERAGENT, 'Wikimedia Slimapp' );
+		curl_setopt( $ch, CURLOPT_HTTPHEADER, array(
+			'Accept: text/html; charset=utf-8; profile="https://www.mediawiki.org/wiki/Specs/HTML/1.2.1"',
+		) );
 		$stderr = fopen( 'php://temp', 'rw+' );
 		curl_setopt( $ch, CURLOPT_VERBOSE, true );
 		curl_setopt( $ch, CURLOPT_STDERR, $stderr );
 		$body = curl_exec( $ch );
 		rewind( $stderr );
-		$this->logger->debug( 'Parsoid curl request', array(
+		$this->logger->debug( 'RESTBase curl request', array(
 			'method' => __METHOD__,
 			'url' => $this->url,
 			'parms' => $parms,
@@ -147,7 +154,7 @@ class ParsoidClient {
 		curl_close( $ch );
 
 		// Using a regex to parse html is generally not a sane thing to do,
-		// but in this case we are trusting Parsoid to be returning clean HTML
+		// but in this case we are trusting RESTBase to be returning clean HTML
 		// and all we want to do is unwrap our payload from the
 		// <body>...</body> tag.
 		return preg_replace( '@^.*<body[^>]+>(.*)</body>.*$@s', '$1', $body );
