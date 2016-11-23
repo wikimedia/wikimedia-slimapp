@@ -52,4 +52,4 @@ Wikimedia Grants Review application.
 
 License
 -------
-[GNU GPL 3.0+](www.gnu.org/copyleft/gpl.html "GNU GPL 3.0")
+[GNU GPL 3.0+](//www.gnu.org/copyleft/gpl.html "GNU GPL 3.0")
