@@ -44,6 +44,10 @@ abstract class AbstractDao {
 	 * @var LoggerInterface $logger
 	 */
 	protected $logger;
+	/**
+	 * @var Integer $transactionCounter Used for keeping track of transaction status
+	 */
+	protected $transactionCounter = 0;
 
 	/**
 	 * @param string $dsn PDO data source name
@@ -60,6 +64,50 @@ abstract class AbstractDao {
 				PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
 			)
 		);
+	}
+
+	/**
+	 * Start a new transaction
+	 * If already a transaction has been started, it will only
+	 * increment the counter. This method is useful
+	 * in nested transactions.
+	 */
+	protected function transactionStart() {
+		if ( $this->transactionCounter == 0 ) {
+			$this->transactionCounter++;
+			return $this->dbh->beginTransaction();
+		}
+		$this->transactionCounter++;
+		return $this->transactionCounter >= 0;
+	}
+
+	/**
+	 * Commit a transaction
+	 * If the transaction counter is zero, commit
+	 * the transaction otherwise decrement the transaction counter.
+	 * This method is useful in nested transactions.
+	 */
+	protected function transactionCommit() {
+		$this->transactionCounter--;
+		if ( $this->transactionCounter == 0 ) {
+			return $this->dbh->commit();
+		}
+		return $this->transactionCounter >= 0;
+	}
+
+	/**
+	 * Rollback a transaction
+	 * If the transaction counter is greater than 0, set it to
+	 * 0 and rollback the transaction. This method is useful
+	 * in nested transactions.
+	 */
+	protected function transactionRollback() {
+		if ( $this->transactionCounter >= 0 ) {
+			$this->transactionCounter = 0;
+			return $this->dbh->rollback();
+		}
+		$this->transactionCounter = 0;
+		return false;
 	}
 
 	/**
@@ -172,13 +220,13 @@ abstract class AbstractDao {
 	protected function update( $sql, $params = null ) {
 		$stmt = $this->dbh->prepare( $sql );
 		try {
-			$this->dbh->begintransaction();
+			$this->transactionStart();
 			$stmt->execute( $params );
-			$this->dbh->commit();
+			$this->transactionCommit();
 			return true;
 
 		} catch ( PDOException $e ) {
-			$this->dbh->rollback();
+			$this->transactionRollback();
 			$this->logger->error( 'Update failed.', array(
 				'method' => __METHOD__,
 				'exception' => $e,
@@ -199,14 +247,14 @@ abstract class AbstractDao {
 	protected function insert( $sql, $params = null ) {
 		$stmt = $this->dbh->prepare( $sql );
 		try {
-			$this->dbh->beginTransaction();
+			$this->transactionStart();
 			$stmt->execute( $params );
 			$rowid = $this->dbh->lastInsertId();
-			$this->dbh->commit();
+			$this->transactionCommit();
 			return $rowid;
 
 		} catch ( PDOException $e ) {
-			$this->dbh->rollback();
+			$this->transactionRollback();
 			$this->logger->error( 'Insert failed.', array(
 				'method' => __METHOD__,
 				'exception' => $e,
