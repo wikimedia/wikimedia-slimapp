@@ -1,8 +1,9 @@
 Wikimedia SlimApp
 =================
 
-Common classes to help with creating an application using the Slim micro
-framework and Twig template engine.
+Common classes to help with creating an application using the
+[Slim](https://www.slimframework.com/) micro framework and
+[Twig](https://twig.symfony.com/) template engine.
 
 System Requirements
 -------------------
@@ -41,6 +42,32 @@ settings will be injected into the application environment.
     LOG_LEVEL=debug
     CACHE_DIR=/var/cache/twig
     DEFAULT_LANG=es
+
+Working on the code
+-------------------
+Code review process is done through [Gerrit](https://gerrit.wikimedia.org/).
+To start hacking on the application refer to the [Gerrit
+Tutorial](https://www.mediawiki.org/wiki/Gerrit/Tutorial).
+
+Key Features
+------------
+#### Dao
+Base Class for data access objects
+
+This class contains common methods for performing SQL operations and handling
+nested transactions.
+
+#### Controller
+Page Controller
+
+This class contains common methods for setting default data, getting flash
+messages and handling undefined methods.
+
+#### Form
+Class for collecting and validating users' data
+
+This class contains common methods for getting users' data, validating it and
+getting error messages in case of invalid data.
 
 Authors
 -------
