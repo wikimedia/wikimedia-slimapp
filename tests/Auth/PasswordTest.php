@@ -29,7 +29,7 @@ namespace Wikimedia\Slimapp\Auth;
  * @author Bryan Davis <bd808@wikimedia.org>
  * @copyright © 2015 Bryan Davis, Wikimedia Foundation and contributors.
  */
-class PasswordTest extends \PHPUnit_Framework_TestCase {
+class PasswordTest extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * @covers ::encodePassword

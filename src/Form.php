@@ -28,6 +28,9 @@ use Psr\Log\LoggerInterface;
 /**
  * Collect and validate user input.
  *
+ * Wraps PHP's built-in filter_var_array function to collect GET or POST input
+ * as a collection of sanitized data.
+ *
  * @author Bryan Davis <bd808@wikimedia.org>
  * @copyright © 2015 Bryan Davis, Wikimedia Foundation and contributors.
  */
@@ -42,19 +45,19 @@ class Form {
 	 * Input parameters to expect.
 	 * @var array $params
 	 */
-	protected $params = array();
+	protected $params = [];
 
 	/**
-	 * Values recieved after filtering.
+	 * Values received after filtering.
 	 * @var array $values
 	 */
-	protected $values = array();
+	protected $values = [];
 
 	/**
 	 * Fields with errors.
 	 * @var array $errors
 	 */
-	protected $errors = array();
+	protected $errors = [];
 
 	/**
 	 * @param LoggerInterface $logger Log channel
@@ -66,13 +69,20 @@ class Form {
 	/**
 	 * Add an input expectation.
 	 *
-	 * @var string $name Parameter to expect
-	 * @var int $filter Validation filter(s) to apply
-	 * @var array $options Validation options
+	 * Allowed options:
+	 * - default: Default value for missing input
+	 * - flags: Flags to pass to filter_var_array
+	 * - required: Is this input required?
+	 * - validate: Callable to perform additional validation
+	 * - callback: Callable for \FILTER_CALLBACK validation
+	 *
+	 * @param string $name Parameter to expect
+	 * @param int $filter Validation filter(s) to apply
+	 * @param array $options Validation options
 	 * @return Form Self, for message chaining
 	 */
 	public function expect( $name, $filter, $options = null ) {
-		$options = ( is_array( $options ) ) ? $options : array();
+		$options = ( is_array( $options ) ) ? $options : [];
 		$flags = null;
 		$required = false;
 		$validate = null;
@@ -103,189 +113,399 @@ class Form {
 			$options = $options['callback'];
 		}
 
-		$this->params[$name] = array(
+		$this->params[$name] = [
 			'filter'   => $filter,
 			'flags'    => $flags,
 			'options'  => $options,
 			'required' => $required,
 			'validate' => $validate,
-		);
+		];
 
 		return $this;
 	}
 
+	/**
+	 * @param string $name Parameter to expect
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function expectBool( $name, $options = null ) {
-		$options = ( is_array( $options ) ) ? $options : array();
+		$options = ( is_array( $options ) ) ? $options : [];
 		if ( !isset( $options['default'] ) ) {
 			$options['default'] = false;
 		}
 		return $this->expect( $name, \FILTER_VALIDATE_BOOLEAN, $options );
 	}
 
+	/**
+	 * @param string $name Parameter to require
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function requireBool( $name, $options = null ) {
 		return $this->expectBool( $name, self::required( $options ) );
 	}
 
+	/**
+	 * @param string $name Parameter to expect
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function expectBoolArray( $name, $options = null ) {
 		return $this->expectBool( $name, self::wantArray( $options ) );
 	}
 
+	/**
+	 * @param string $name Parameter to require
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function requireBoolArray( $name, $options = null ) {
 		return $this->requireBool( $name, self::wantArray( $options ) );
 	}
 
+	/**
+	 * @param string $name Parameter to expect
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function expectTrue( $name, $options = null ) {
-		$options = ( is_array( $options ) ) ? $options : array();
+		$options = ( is_array( $options ) ) ? $options : [];
 		$options['validate'] = function ( $v ) {
 			return (bool)$v;
 		};
 		return $this->expectBool( $name, $options );
 	}
 
+	/**
+	 * @param string $name Parameter to require
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function requireTrue( $name, $options = null ) {
 		return $this->expectTrue( $name, self::required( $options ) );
 	}
 
+	/**
+	 * @param string $name Parameter to expect
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function expectTrueArray( $name, $options = null ) {
 		return $this->expectTrue( $name, self::wantArray( $options ) );
 	}
 
+	/**
+	 * @param string $name Parameter to require
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function requireTrueArray( $name, $options = null ) {
 		return $this->requireTrue( $name, self::wantArray( $options ) );
 	}
 
+	/**
+	 * @param string $name Parameter to expect
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function expectEmail( $name, $options = null ) {
 		return $this->expect( $name, \FILTER_VALIDATE_EMAIL, $options );
 	}
 
+	/**
+	 * @param string $name Parameter to require
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function requireEmail( $name, $options = null ) {
 		return $this->expectEmail( $name, self::required( $options ) );
 	}
 
+	/**
+	 * @param string $name Parameter to expect
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function expectEmailArray( $name, $options = null ) {
 		return $this->expectEmail( $name, self::wantArray( $options ) );
 	}
 
+	/**
+	 * @param string $name Parameter to require
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function requireEmailArray( $name, $options = null ) {
 		return $this->requireEmail( $name, self::wantArray( $options ) );
 	}
 
+	/**
+	 * @param string $name Parameter to expect
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function expectFloat( $name, $options = null ) {
 		return $this->expect( $name, \FILTER_VALIDATE_FLOAT, $options );
 	}
 
+	/**
+	 * @param string $name Parameter to require
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function requireFloat( $name, $options = null ) {
 		return $this->expectFloat( $name, self::required( $options ) );
 	}
 
+	/**
+	 * @param string $name Parameter to expect
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function expectFloatArray( $name, $options = null ) {
 		return $this->expectFloat( $name, self::wantArray( $options ) );
 	}
 
+	/**
+	 * @param string $name Parameter to require
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function requireFloatArray( $name, $options = null ) {
 		return $this->requireFloat( $name, self::wantArray( $options ) );
 	}
 
+	/**
+	 * @param string $name Parameter to expect
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function expectInt( $name, $options = null ) {
 		return $this->expect( $name, \FILTER_VALIDATE_INT, $options );
 	}
 
+	/**
+	 * @param string $name Parameter to require
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function requireInt( $name, $options = null ) {
 		return $this->expectInt( $name, self::required( $options ) );
 	}
 
+	/**
+	 * @param string $name Parameter to expect
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function expectIntArray( $name, $options = null ) {
 		return $this->expectInt( $name, self::wantArray( $options ) );
 	}
 
+	/**
+	 * @param string $name Parameter to require
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function requireIntArray( $name, $options = null ) {
 		return $this->requireInt( $name, self::wantArray( $options ) );
 	}
 
+	/**
+	 * @param string $name Parameter to expect
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function expectIp( $name, $options = null ) {
 		return $this->expect( $name, \FILTER_VALIDATE_IP, $options );
 	}
 
+	/**
+	 * @param string $name Parameter to require
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function requireIp( $name, $options = null ) {
 		return $this->expectIp( $name, self::required( $options ) );
 	}
 
+	/**
+	 * @param string $name Parameter to expect
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function expectIpArray( $name, $options = null ) {
 		return $this->expectIp( $name, self::wantArray( $options ) );
 	}
 
+	/**
+	 * @param string $name Parameter to require
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function requireIpArray( $name, $options = null ) {
 		return $this->requireIp( $name, self::wantArray( $options ) );
 	}
 
+	/**
+	 * @param string $name Parameter to expect
+	 * @param string $re Regular expression
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function expectRegex( $name, $re, $options = null ) {
-		$options = ( is_array( $options ) ) ? $options : array();
+		$options = ( is_array( $options ) ) ? $options : [];
 		$options['regexp'] = $re;
 		return $this->expect( $name, \FILTER_VALIDATE_REGEXP, $options );
 	}
 
+	/**
+	 * @param string $name Parameter to require
+	 * @param string $re Regular expression
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function requireRegex( $name, $re, $options = null ) {
 		return $this->expectRegex( $name, $re, self::required( $options ) );
 	}
 
+	/**
+	 * @param string $name Parameter to expect
+	 * @param string $re Regular expression
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function expectRegexArray( $name, $re, $options = null ) {
 		return $this->expectRegex( $name, $re, self::wantArray( $options ) );
 	}
 
+	/**
+	 * @param string $name Parameter to require
+	 * @param string $re Regular expression
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function requireRegexArray( $name, $re, $options = null ) {
 		return $this->requireRegex( $name, $re, self::wantArray( $options ) );
 	}
 
+	/**
+	 * @param string $name Parameter to expect
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function expectUrl( $name, $options = null ) {
 		return $this->expect( $name, \FILTER_VALIDATE_URL, $options );
 	}
 
+	/**
+	 * @param string $name Parameter to require
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function requireUrl( $name, $options = null ) {
 		return $this->expectUrl( $name, self::required( $options ) );
 	}
 
+	/**
+	 * @param string $name Parameter to expect
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function expectUrlArray( $name, $options = null ) {
 		return $this->expectUrl( $name, self::wantArray( $options ) );
 	}
 
+	/**
+	 * @param string $name Parameter to require
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function requireUrlArray( $name, $options = null ) {
 		return $this->requireUrl( $name, self::wantArray( $options ) );
 	}
 
+	/**
+	 * @param string $name Parameter to expect
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function expectString( $name, $options = null ) {
 		return $this->expectRegex( $name, '/^.+$/s', $options );
 	}
 
+	/**
+	 * @param string $name Parameter to require
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function requireString( $name, $options = null ) {
 		return $this->expectString( $name, self::required( $options ) );
 	}
 
+	/**
+	 * @param string $name Parameter to expect
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function expectStringArray( $name, $options = null ) {
 		return $this->expectString( $name, self::wantArray( $options ) );
 	}
 
+	/**
+	 * @param string $name Parameter to require
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function requireStringArray( $name, $options = null ) {
 		return $this->requireString( $name, self::wantArray( $options ) );
 	}
 
+	/**
+	 * @param string $name Parameter to expect
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function expectAnything( $name, $options = null ) {
 		return $this->expect( $name, \FILTER_UNSAFE_RAW, $options );
 	}
 
+	/**
+	 * @param string $name Parameter to require
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function requireAnything( $name, $options = null ) {
 		return $this->expectAnything( $name, self::required( $options ) );
 	}
 
+	/**
+	 * @param string $name Parameter to expect
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function expectAnythingArray( $name, $options = null ) {
 		return $this->expectAnything( $name, self::wantArray( $options ) );
 	}
 
+	/**
+	 * @param string $name Parameter to require
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function requireAnythingArray( $name, $options = null ) {
 		return $this->requireAnything( $name, self::wantArray( $options ) );
 	}
 
+	/**
+	 * @param string $name Parameter to expect
+	 * @param array $valids Valid values
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function expectInArray( $name, $valids, $options = null ) {
-		$options = ( is_array( $options ) ) ? $options : array();
+		$options = ( is_array( $options ) ) ? $options : [];
 		$required = isset( $options['required'] ) ? $options['required'] : false;
 		$options['validate'] = function ( $val ) use ( $valids, $required ) {
 			return ( !$required && empty( $val ) ) || in_array( $val, $valids );
@@ -293,18 +513,36 @@ class Form {
 		return $this->expectAnything( $name, $options );
 	}
 
+	/**
+	 * @param string $name Parameter to require
+	 * @param array $valids Valid values
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function requireInArray( $name, $valids, $options = null ) {
 		return $this->expectInArray( $name, $valids,
 			self::required( $options )
 		);
 	}
 
+	/**
+	 * @param string $name Parameter to expect
+	 * @param array $valids Valid values
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function expectInArrayArray( $name, $valids, $options = null ) {
 		return $this->expectInArray(
 			$name, $values, self::wantArray( $options )
 		);
 	}
 
+	/**
+	 * @param string $name Parameter to require
+	 * @param array $valids Valid values
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function requireInArrayArray( $name, $valids, $options = null ) {
 		return $this->requireInArray(
 			$name, $values, self::wantArray( $options )
@@ -321,7 +559,7 @@ class Form {
 	 * @see DateTime::createFromFormat
 	 */
 	public function expectDateTime( $name, $format, $options = null ) {
-		$options = ( is_array( $options ) ) ? $options : array();
+		$options = ( is_array( $options ) ) ? $options : [];
 		$options['callback'] = function ( $value ) use ( $format ) {
 			try {
 				$date = \DateTime::createFromFormat( $format, $value );
@@ -339,6 +577,12 @@ class Form {
 		return $this->expect( $name, \FILTER_CALLBACK, $options );
 	}
 
+	/**
+	 * @param string $name Parameter to require
+	 * @param string $format Expected date/time format
+	 * @param array $options Additional options
+	 * @return Form Self, for message chaining
+	 */
 	public function requireDateTime( $name, $format, $options = null ) {
 		return $this->expectDateTime( $name, $format,
 			self::required( $options )
@@ -353,9 +597,9 @@ class Form {
 	 */
 	public function validate( $vars = null ) {
 		$vars = $vars ?: $_POST;
-		$this->values = array();
-		$this->errors = array();
-		$arrayInvalids = array();
+		$this->values = [];
+		$this->errors = [];
+		$arrayInvalids = [];
 
 		$cleaned = filter_var_array( $vars, $this->params );
 
@@ -372,7 +616,7 @@ class Form {
 				$opt['filter'] !== \FILTER_VALIDATE_BOOLEAN
 			) {
 				// Strip invalid value markers from input array
-				$this->values[$name] = array();
+				$this->values[$name] = [];
 				foreach ( $clean as $key => $value ) {
 					if ( $opt['filter'] !== \FILTER_VALIDATE_BOOLEAN &&
 						$value !== false
@@ -388,7 +632,7 @@ class Form {
 						// Keep track of invalid keys in case input was
 						// required
 						if ( !isset( $arrayInvalids[$name] ) ) {
-							$arrayInvalids[$name] = array();
+							$arrayInvalids[$name] = [];
 						}
 						$arrayInvalids[$name][] = "{$name}[{$key}]";
 					}
@@ -426,6 +670,10 @@ class Form {
 	protected function customValidationHook() {
 	}
 
+	/**
+	 * @param string $name Parameter name
+	 * @return mixed Parameter value
+	 */
 	public function get( $name ) {
 		if ( isset( $this->values[$name] ) ) {
 			return $this->values[$name];
@@ -438,14 +686,23 @@ class Form {
 		}
 	}
 
+	/**
+	 * @return array Form values
+	 */
 	public function getValues() {
 		return $this->values;
 	}
 
+	/**
+	 * @return array Form errors
+	 */
 	public function getErrors() {
 		return $this->errors;
 	}
 
+	/**
+	 * @return bool True if form has errors, false otherwise.
+	 */
 	public function hasErrors() {
 		return count( $this->errors ) !== 0;
 	}
@@ -456,7 +713,7 @@ class Form {
 	 * @return string URL-encoded message body
 	 */
 	public static function urlEncode( $parms ) {
-		$payload = array();
+		$payload = [];
 
 		foreach ( $parms as $key => $value ) {
 			if ( is_array( $value ) ) {
@@ -469,23 +726,23 @@ class Form {
 		}
 
 		return implode( '&', $payload );
-	} // end urlEncode
+	}
 
 	/**
 	 * Merge parameters into current query string.
-	 * @param array $parms Parameter array
+	 * @param array $params Parameter array
 	 * @return string URL-encoded message body
 	 */
-	public static function qsMerge( $params = array() ) {
+	public static function qsMerge( $params = [] ) {
 		return self::urlEncode( array_merge( $_GET, $params ) );
 	}
 
 	/**
 	 * Remove parameters from current query string.
-	 * @param array $parms Parameters to remove
+	 * @param array $params Parameters to remove
 	 * @return string URL-encoded message body
 	 */
-	public static function qsRemove( $params = array() ) {
+	public static function qsRemove( $params = [] ) {
 		return self::urlEncode( array_diff_key( $_GET, array_flip( $params ) ) );
 	}
 
@@ -496,7 +753,7 @@ class Form {
 	 * @return array
 	 */
 	protected static function required( $options ) {
-		return array_merge( array( 'required' => true ), (array)$options );
+		return array_merge( [ 'required' => true ], (array)$options );
 	}
 
 	/**
@@ -507,7 +764,7 @@ class Form {
 	 * @return array
 	 */
 	protected static function wantArray( $options ) {
-		$options = array_merge( array( 'flags' => 0 ), (array)$options );
+		$options = array_merge( [ 'flags' => 0 ], (array)$options );
 		$options['flags'] = $options['flags'] | \FILTER_REQUIRE_ARRAY;
 		return $options;
 	}

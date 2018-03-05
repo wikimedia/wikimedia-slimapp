@@ -45,10 +45,13 @@ class HeaderMiddleware extends \Slim\Middleware {
 	 *   the sole argument and must return either a string value to use as the
 	 *   header content or null to cancel setting this header.
 	 */
-	public function __construct( array $headers = array() ) {
+	public function __construct( array $headers = [] ) {
 		$this->headers = $headers;
 	}
 
+	/**
+	 * Add configured headers to response.
+	 */
 	public function call() {
 		$resp = $this->app->response;
 		foreach ( $this->headers as $name => $value ) {

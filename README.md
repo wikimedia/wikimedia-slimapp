@@ -6,7 +6,7 @@ framework and Twig template engine.
 
 System Requirements
 -------------------
-* PHP >= 5.3.7
+* PHP >= 5.5.9
 
 Configuration
 -------------

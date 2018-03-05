@@ -28,7 +28,7 @@ namespace Wikimedia\Slimapp;
  * @author Bryan Davis <bd808@wikimedia.org>
  * @copyright © 2015 Bryan Davis, Wikimedia Foundation and contributors.
  */
-class ConfigTest extends \PHPUnit_Framework_TestCase {
+class ConfigTest extends \PHPUnit\Framework\TestCase {
 
 	public function testLoad() {
 		Config::load( __DIR__ . '/fixtures/ConfigTest.env' );

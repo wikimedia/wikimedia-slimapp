@@ -29,7 +29,7 @@ namespace Wikimedia\Slimapp;
  * @author Bryan Davis <bd808@wikimedia.org>
  * @copyright © 2015 Bryan Davis, Wikimedia Foundation and contributors.
  */
-class FormTest extends \PHPUnit_Framework_TestCase {
+class FormTest extends \PHPUnit\Framework\TestCase {
 
 	public function testRequired() {
 		$form = new Form();
@@ -44,7 +44,7 @@ class FormTest extends \PHPUnit_Framework_TestCase {
 
 	public function testDefaultWhenEmpty() {
 		$form = new Form();
-		$form->expectString( 'foo', array( 'default' => 'bar' ) );
+		$form->expectString( 'foo', [ 'default' => 'bar' ] );
 
 		$this->assertTrue( $form->validate(), 'Form should be valid' );
 		$vals = $form->getValues();
@@ -56,7 +56,7 @@ class FormTest extends \PHPUnit_Framework_TestCase {
 
 	public function testNotInArray() {
 		$form = new Form();
-		$form->requireInArray( 'foo', array( 'bar' ) );
+		$form->requireInArray( 'foo', [ 'bar' ] );
 
 		$this->assertFalse( $form->validate(), 'Form should be invalid' );
 		$vals = $form->getValues();
@@ -68,7 +68,7 @@ class FormTest extends \PHPUnit_Framework_TestCase {
 	public function testInArray() {
 		$_POST['foo'] = 'bar';
 		$form = new Form();
-		$form->requireInArray( 'foo', array( 'bar' ) );
+		$form->requireInArray( 'foo', [ 'bar' ] );
 
 		$this->assertTrue( $form->validate(), 'Form should be valid' );
 		$vals = $form->getValues();
@@ -80,7 +80,7 @@ class FormTest extends \PHPUnit_Framework_TestCase {
 	public function testNotInArrayNotRequired() {
 		unset( $_POST['foo'] );
 		$form = new Form();
-		$form->expectInArray( 'foo', array( 'bar' ) );
+		$form->expectInArray( 'foo', [ 'bar' ] );
 
 		$this->assertTrue( $form->validate(), 'Form should be valid' );
 		$vals = $form->getValues();
@@ -90,7 +90,7 @@ class FormTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testMultipleInputs() {
-		$data = array(
+		$data = [
 			'bool' => false,
 			'true' => true,
 			'email' => 'user!user2+route@example.wiki',
@@ -101,7 +101,7 @@ class FormTest extends \PHPUnit_Framework_TestCase {
 			'regex' => 'abc',
 			'url' => 'proto://host.tld/path',
 			'str' => 'one two three',
-		);
+		];
 		$form = new Form();
 		$form->requireBool( 'bool' );
 		$form->requireTrue( 'true' );
@@ -119,12 +119,12 @@ class FormTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testArrayValues() {
-		$data = array(
-			'bool' => array( true, false ),
-			'float' => array( 1.23, 4.56 ),
-			'int' => array( 123, 456 ),
-			'str' => array( 'one', 'two', 'three' ),
-		);
+		$data = [
+			'bool' => [ true, false ],
+			'float' => [ 1.23, 4.56 ],
+			'int' => [ 123, 456 ],
+			'str' => [ 'one', 'two', 'three' ],
+		];
 		$form = new Form();
 		$form->requireBoolArray( 'bool' );
 		$form->requireFloatArray( 'float' );
@@ -136,15 +136,15 @@ class FormTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testArrayValueErrors() {
-		$data = array(
-			'int' => array( 123, 456, 'xyzzy', '678' ),
-		);
+		$data = [
+			'int' => [ 123, 456, 'xyzzy', '678' ],
+		];
 		$form = new Form();
 		$form->requireIntArray( 'int' );
 		$this->assertFalse( $form->validate( $data ), 'Form should not be valid' );
 		$vals = $form->getValues();
 		$this->assertArrayHasKey( 'int', $vals );
-		$this->assertSame( array( 123, 456, 3 => 678 ), $vals['int'] );
+		$this->assertSame( [ 123, 456, 3 => 678 ], $vals['int'] );
 		$this->assertContains( 'int[2]', $form->getErrors() );
 	}
 
@@ -175,32 +175,32 @@ class FormTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function provideExpectDateTime() {
-		return array(
-			array( '2014-12-08', 'Y-m-d', true ),
-			array( '2014-12-08 23:02', 'Y-m-d H:i', true ),
-			array( '11:37', 'H:i', true ),
-			array( '2014-13-1', 'Y-m-d', false ),
-			array( '2014-2-29', 'Y-m-d', false ),
-			array( '2014-12-08 23:02', 'Y-m-d h:i', false ),
-			array( '27:37', 'H:i', false ),
-		);
+		return [
+			[ '2014-12-08', 'Y-m-d', true ],
+			[ '2014-12-08 23:02', 'Y-m-d H:i', true ],
+			[ '11:37', 'H:i', true ],
+			[ '2014-13-1', 'Y-m-d', false ],
+			[ '2014-2-29', 'Y-m-d', false ],
+			[ '2014-12-08 23:02', 'Y-m-d h:i', false ],
+			[ '27:37', 'H:i', false ],
+		];
 	}
 
 	public function testEncodeBasic() {
-		$input = array(
+		$input = [
 			'foo' => 1,
 			'bar' => 'this=that',
 			'baz' => 'tom & jerry',
-		);
+		];
 		$output = Form::urlEncode( $input );
 		$this->assertEquals( 'foo=1&bar=this%3Dthat&baz=tom+%26+jerry', $output );
 	}
 
 	public function testEncodeArray() {
-		$input = array(
-			'foo' => array( 'a', 'b', 'c' ),
-			'bar[]' => array( 1, 2, 3 ),
-		);
+		$input = [
+			'foo' => [ 'a', 'b', 'c' ],
+			'bar[]' => [ 1, 2, 3 ],
+		];
 		$output = Form::urlEncode( $input );
 		$this->assertEquals(
 			'foo=a&foo=b&foo=c&bar%5B%5D=1&bar%5B%5D=2&bar%5B%5D=3', $output );
@@ -214,7 +214,7 @@ class FormTest extends \PHPUnit_Framework_TestCase {
 		$output = Form::qsMerge();
 		$this->assertEquals( 'foo=1&bar=this%3Dthat&baz=tom+%26+jerry', $output );
 
-		$output = Form::qsMerge( array( 'foo' => 2, 'xyzzy' => 'grue' ) );
+		$output = Form::qsMerge( [ 'foo' => 2, 'xyzzy' => 'grue' ] );
 		$this->assertEquals( 'foo=2&bar=this%3Dthat&baz=tom+%26+jerry&xyzzy=grue', $output );
 	}
 
@@ -226,7 +226,7 @@ class FormTest extends \PHPUnit_Framework_TestCase {
 		$output = Form::qsRemove();
 		$this->assertEquals( 'foo=1&bar=this%3Dthat&baz=tom+%26+jerry', $output );
 
-		$output = Form::qsRemove( array( 'bar' ) );
+		$output = Form::qsRemove( [ 'bar' ] );
 		$this->assertEquals( 'foo=1&baz=tom+%26+jerry', $output );
 	}
 }

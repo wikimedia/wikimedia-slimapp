@@ -38,6 +38,9 @@ class CsrfMiddleware extends \Slim\Middleware {
 
 	const PARAM = 'csrf_token';
 
+	/**
+	 * Handle CSRF validation and view injection.
+	 */
 	public function call() {
 		if ( !isset( $_SESSION[self::PARAM] ) ) {
 			$_SESSION[self::PARAM] = sha1( session_id() . microtime() );
@@ -46,22 +49,22 @@ class CsrfMiddleware extends \Slim\Middleware {
 		$token = $_SESSION[self::PARAM];
 		$method = $this->app->request()->getMethod();
 
-		if ( in_array( $method, array( 'POST', 'PUT', 'DELETE' ) ) ) {
+		if ( in_array( $method, [ 'POST', 'PUT', 'DELETE' ] ) ) {
 			$requestToken = $this->app->request()->post( self::PARAM );
 			if ( $token !== $requestToken ) {
-				$this->app->log->error( 'Missing or invalid CSRF token', array(
+				$this->app->log->error( 'Missing or invalid CSRF token', [
 					'got' => $requestToken,
 					'expected' => $token,
-				) );
-				$this->app->render( 'csrf.html', array(), 400 );
+				] );
+				$this->app->render( 'csrf.html', [], 400 );
 				return;
 			}
 		}
 
-		$this->app->view()->replace( array(
+		$this->app->view()->replace( [
 			'csrf_param' => self::PARAM,
 			'csrf_token' => $token,
-		) );
+		] );
 
 		$this->next->call();
 	}

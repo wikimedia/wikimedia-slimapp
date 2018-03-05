@@ -45,11 +45,11 @@ abstract class AbstractApp {
 	 * @param string $deployDir Full path to code deployment
 	 * @param array $settings Associative array of application settings
 	 */
-	public function __construct( $deployDir, array $settings = array() ) {
+	public function __construct( $deployDir, array $settings = [] ) {
 		$this->deployDir = $deployDir;
 
 		$this->slim = new \Slim\Slim( array_merge(
-			array(
+			[
 				'mode' => 'production',
 				'debug' => false,
 				'log.channel' => Config::getStr( 'LOG_CHANNEL', 'app' ),
@@ -69,7 +69,7 @@ abstract class AbstractApp {
 				),
 				'i18n.default' => Config::getstr( 'DEFAULT_LANG', 'en' ),
 				'smtp.host' => Config::getStr( 'SMTP_HOST', 'localhost' ),
-			),
+			],
 			$settings
 		) );
 
@@ -219,7 +219,7 @@ abstract class AbstractApp {
 	 */
 	protected function configureHeaderMiddleware() {
 		// Add headers to all responses:
-		return array(
+		return [
 			'Vary' => 'Cookie',
 			'X-Frame-Options' => 'DENY',
 			'Content-Security-Policy' =>
@@ -233,6 +233,6 @@ abstract class AbstractApp {
 			// Don't forget to override this for any content that is not
 			// actually HTML (e.g. json)
 			'Content-Type' => 'text/html; charset=UTF-8',
-		);
+		];
 	}
 }

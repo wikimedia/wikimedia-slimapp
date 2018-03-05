@@ -12,7 +12,16 @@
   <arg value="sp"/>
 
   <rule ref="vendor/mediawiki/mediawiki-codesniffer/MediaWiki"/>
-  <rule ref="Generic.Arrays.DisallowLongArraySyntax.Found">
+  <rule ref="MediaWiki.Commenting.MissingCovers.MissingCovers">
+      <severity>0</severity>
+  </rule>
+  <rule ref="MediaWiki.Usage.SuperGlobalsUsage.SuperGlobals">
+      <severity>0</severity>
+  </rule>
+  <rule ref="MediaWiki.Commenting.FunctionComment.MissingParamComment">
+      <severity>0</severity>
+  </rule>
+  <rule ref="MediaWiki.WhiteSpace.SpaceBeforeSingleLineComment.NewLineComment">
       <severity>0</severity>
   </rule>
 </ruleset>

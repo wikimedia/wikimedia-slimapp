@@ -64,11 +64,15 @@ class ParsoidClient {
 		$this->cache = $cache;
 	}
 
+	/**
+	 * @param string $text Wikitext
+	 * @return string Parsed text
+	 */
 	public function parse( $text ) {
-		$this->logger->debug( 'Parsing [{text}]', array(
+		$this->logger->debug( 'Parsing [{text}]', [
 			'method' => __METHOD__,
 			'text' => $text,
-		) );
+		] );
 		$key = sha1( $text );
 		$parsed = $this->cacheGet( $key );
 		if ( $parsed === null ) {
@@ -83,31 +87,39 @@ class ParsoidClient {
 		return $parsed;
 	}
 
+	/**
+	 * @param string $key Cache key
+	 * @return string Cached parse result
+	 */
 	protected function cacheGet( $key ) {
 		$file = "{$this->cache}/{$key}.restbase";
 		if ( file_exists( $file ) ) {
-			$this->logger->debug( 'Cache hit for [{key}]', array(
+			$this->logger->debug( 'Cache hit for [{key}]', [
 				'method' => __METHOD__,
 				'key' => $key,
-			) );
+			] );
 			return file_get_contents( $file );
 		}
-		$this->logger->info( 'Cache miss for [{key}]', array(
+		$this->logger->info( 'Cache miss for [{key}]', [
 			'method' => __METHOD__,
 			'key' => $key,
-		) );
+		] );
 		return null;
 	}
 
+	/**
+	 * @param string $key Cache key
+	 * @param string $value Parse result
+	 */
 	protected function cachePut( $key, $value ) {
 		$file = "{$this->cache}/{$key}.restbase";
 		file_put_contents( $file, $value );
-		$this->logger->info( 'Cache put for [{key}]', array(
+		$this->logger->info( 'Cache put for [{key}]', [
 			'method' => __METHOD__,
 			'key' => $key,
 			'file' => $file,
 			'value' => $value,
-		) );
+		] );
 	}
 
 	/**
@@ -115,10 +127,10 @@ class ParsoidClient {
 	 * @return string|bool False on failure, html otherwise
 	 */
 	protected function fetchParse( $text ) {
-		$parms = array(
+		$parms = [
 			'wikitext' => $text,
 			'body_only' => 'true',
-		);
+		];
 		$ch = curl_init();
 		curl_setopt( $ch, CURLOPT_URL, $this->url );
 		curl_setopt( $ch, CURLOPT_POST, true );
@@ -126,28 +138,28 @@ class ParsoidClient {
 		curl_setopt( $ch, CURLOPT_ENCODING, '' );
 		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
 		curl_setopt( $ch, CURLOPT_USERAGENT, 'Wikimedia Slimapp' );
-		curl_setopt( $ch, CURLOPT_HTTPHEADER, array(
+		curl_setopt( $ch, CURLOPT_HTTPHEADER, [
 			'Accept: text/html; charset=utf-8; profile="https://www.mediawiki.org/wiki/Specs/HTML/1.2.1"',
-		) );
+		] );
 		$stderr = fopen( 'php://temp', 'rw+' );
 		curl_setopt( $ch, CURLOPT_VERBOSE, true );
 		curl_setopt( $ch, CURLOPT_STDERR, $stderr );
 		$body = curl_exec( $ch );
 		rewind( $stderr );
-		$this->logger->debug( 'RESTBase curl request', array(
+		$this->logger->debug( 'RESTBase curl request', [
 			'method' => __METHOD__,
 			'url' => $this->url,
 			'parms' => $parms,
 			'stderr' => stream_get_contents( $stderr ),
-		) );
+		] );
 		if ( $body === false ) {
-			$this->logger->error( 'Curl error #{errno}: {error}', array(
+			$this->logger->error( 'Curl error #{errno}: {error}', [
 				'method' => __METHOD__,
 				'errno' => curl_errno( $ch ),
 				'error' => curl_error( $ch ),
 				'url' => $this->url,
 				'parms' => $parms,
-			) );
+			] );
 			curl_close( $ch );
 			return false;
 		}

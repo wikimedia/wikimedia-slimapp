@@ -28,7 +28,7 @@ namespace Wikimedia\Slimapp\Dao;
  * @author Bryan Davis <bd808@wikimedia.org>
  * @copyright © 2015 Bryan Davis, Wikimedia Foundation and contributors.
  */
-class AbstractDaoTest extends \PHPUnit_Framework_TestCase {
+class AbstractDaoTest extends \PHPUnit\Framework\TestCase {
 
 	/**
 	 * @dataProvider provideBuildWhere
@@ -44,20 +44,20 @@ class AbstractDaoTest extends \PHPUnit_Framework_TestCase {
 
 		$this->assertSame(
 			$expect,
-			$buildWhere->invokeArgs( $fixture, array( $where, $conjunction ) )
+			$buildWhere->invokeArgs( $fixture, [ $where, $conjunction ] )
 		);
 	}
 
 	public function provideBuildWhere() {
-		return array(
-			'empty' => array( array(), 'AND', '' ),
-			'1 arg' => array( array( 'foo=bar' ), 'AND', 'WHERE (foo=bar) ' ),
-			'2 args' => array(
-				array( 'foo=bar', 'baz=quuxx' ),
+		return [
+			'empty' => [ [], 'AND', '' ],
+			'1 arg' => [ [ 'foo=bar' ], 'AND', 'WHERE (foo=bar) ' ],
+			'2 args' => [
+				[ 'foo=bar', 'baz=quuxx' ],
 				'OR',
 				'WHERE (foo=bar) OR (baz=quuxx) '
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -74,19 +74,19 @@ class AbstractDaoTest extends \PHPUnit_Framework_TestCase {
 
 		$this->assertSame(
 			$expect,
-			$buildHaving->invokeArgs( $fixture, array( $having, $conjunction ) )
+			$buildHaving->invokeArgs( $fixture, [ $having, $conjunction ] )
 		);
 	}
 
 	public function provideBuildHaving() {
-		return array(
-			'empty' => array( array(), 'AND', '' ),
-			'1 arg' => array( array( 'foo=bar' ), 'AND', 'HAVING (foo=bar) ' ),
-			'2 args' => array(
-				array( 'foo=bar', 'baz=quuxx' ),
+		return [
+			'empty' => [ [], 'AND', '' ],
+			'1 arg' => [ [ 'foo=bar' ], 'AND', 'HAVING (foo=bar) ' ],
+			'2 args' => [
+				[ 'foo=bar', 'baz=quuxx' ],
 				'OR',
 				'HAVING (foo=bar) OR (baz=quuxx) '
-			),
-		);
+			],
+		];
 	}
 }

@@ -35,35 +35,52 @@ class TwigExtension extends \Twig_Extension {
 	protected $parsoid;
 
 	/**
-	 * @param ParsoidClient $parsoid
+	 * @param ParsoidClient $parsoid ParsoidClient
 	 */
 	public function __construct( ParsoidClient $parsoid ) {
 		$this->parsoid = $parsoid;
 	}
 
+	/**
+	 * @return string Extension name
+	 */
 	public function getName() {
 		return 'wikimedia-slimapp';
 	}
 
+	/**
+	 * @return array Extension functions
+	 */
 	public function getFunctions() {
-		return array(
-			new \Twig_SimpleFunction( 'qsMerge', array( $this, 'qsMerge' ) ),
-		);
+		return [
+			new \Twig_SimpleFunction( 'qsMerge', [ $this, 'qsMerge' ] ),
+		];
 	}
 
+	/**
+	 * @return array Extension filters
+	 */
 	public function getFilters() {
-		return array(
+		return [
 			new \Twig_SimpleFilter(
-				'wikitext', array( $this, 'wikitextFilterCallback' ),
-				array( 'is_safe' => array( 'html' ) )
+				'wikitext', [ $this, 'wikitextFilterCallback' ],
+				[ 'is_safe' => [ 'html' ] ]
 			),
-		);
+		];
 	}
 
+	/**
+	 * @param array $parms Parameter array
+	 * @return string URL-encoded message body
+	 */
 	public function qsMerge( $parms ) {
 		return Form::qsMerge( $parms );
 	}
 
+	/**
+	 * @param string $text Wikitext
+	 * @return string Parsed wikitext
+	 */
 	public function wikitextFilterCallback( $text ) {
 		return $this->parsoid->parse( $text );
 	}

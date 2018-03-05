@@ -24,8 +24,6 @@
 namespace Wikimedia\Slimapp;
 
 use Wikimedia\Slimapp\Dao\AbstractDao;
-use Wikimedia\Slimapp\Form;
-use Wikimedia\Slimapp\Mailer;
 use Wikimedia\SimpleI18n\I18nContext;
 
 /**
@@ -121,9 +119,9 @@ class Controller {
 		$method = $this->slim->request->getMethod();
 		$mname = 'handle' . ucfirst( strtolower( $method ) );
 		if ( method_exists( $this, $mname ) ) {
-			call_user_func_array( array( $this, $mname ), $argv );
+			call_user_func_array( [ $this, $mname ], $argv );
 		} else {
-			call_user_func_array( array( $this, 'handle' ), $argv );
+			call_user_func_array( [ $this, 'handle' ], $argv );
 		}
 	}
 
@@ -136,7 +134,7 @@ class Controller {
 	 */
 	public function __call( $name, $args ) {
 		if ( method_exists( $this->slim, $name ) ) {
-			return call_user_func_array( array( $this->slim, $name ), $args );
+			return call_user_func_array( [ $this->slim, $name ], $args );
 		}
 		// emulate default PHP behavior
 		trigger_error(
@@ -177,7 +175,7 @@ class Controller {
 	 * @param array $params Parameters to add to the message
 	 * @return \Wikimedia\SimpleI18n\Message
 	 */
-	protected function msg( $key, $params = array() ) {
+	protected function msg( $key, $params = [] ) {
 		return $this->i18nctx->message( $key, $params );
 	}
 
@@ -194,7 +192,7 @@ class Controller {
 		$pageCount = ceil( $total / $pageSize );
 		$first = max( 0, $current - $around );
 		$last = min( max( 0, $pageCount - 1 ), $current + 4 );
-		return array( $pageCount, $first, $last );
+		return [ $pageCount, $first, $last ];
 	}
 
 }

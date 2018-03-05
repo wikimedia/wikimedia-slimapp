@@ -125,7 +125,6 @@ class Password {
 	 * entropy sources of random data can be found
 	 */
 	public static function getBytes( $count, $allowWeak = false ) {
-
 		if ( function_exists( 'mcrypt_create_iv' ) ) {
 			$bytes = mcrypt_create_iv( $count, MCRYPT_DEV_URANDOM );
 
@@ -140,7 +139,7 @@ class Password {
 			if ( $strong && strlen( $bytes ) === $count ) {
 				return $bytes;
 			}
-		} // end if openssl_random_pseudo_bytes
+		}
 
 		if ( is_readable( '/dev/urandom' ) ) {
 			// @codingStandardsIgnoreStart : Silencing errors is discouraged
@@ -159,7 +158,7 @@ class Password {
 					return $bytes;
 				}
 			}
-		} // end if /dev/urandom
+		}
 
 		if ( $allowWeak !== true ) {
 			throw new InvalidArgumentException(

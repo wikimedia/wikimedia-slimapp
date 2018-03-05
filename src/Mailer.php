@@ -43,7 +43,7 @@ class Mailer {
 	/**
 	 * @var array $settings
 	 */
-	protected $settings = array(
+	protected $settings = [
 		'AllowEmpty' => false,
 		'CharSet' => 'utf-8',
 		'ContentType' => 'text/plain',
@@ -52,15 +52,15 @@ class Mailer {
 		'Mailer' => 'smtp',
 		'WordWrap' => 72,
 		'XMailer' => 'Wikimedia Grants review system',
-	);
+	];
 
 	/**
 	 * @param array $settings Configuration settings for PHPMailer
 	 * @param LoggerInterface $logger Log channel
 	 */
-	public function __construct( $settings = array(), $logger = null ) {
+	public function __construct( $settings = [], $logger = null ) {
 		$this->logger = $logger ?: new \Psr\Log\NullLogger();
-		$settings = is_array( $settings ) ? $settings : array();
+		$settings = is_array( $settings ) ? $settings : [];
 		$this->settings = array_merge( $this->settings, $settings );
 	}
 
@@ -69,8 +69,9 @@ class Mailer {
 	 * @param string $subject Subject
 	 * @param string $message Message
 	 * @param array $settings Additional settings
+	 * @return bool Send status
 	 */
-	public function mail( $to, $subject, $message, $settings = array() ) {
+	public function mail( $to, $subject, $message, $settings = [] ) {
 		try {
 			$mailer = $this->createMailer( $settings );
 			$mailer->addAddress( $to );
@@ -79,11 +80,11 @@ class Mailer {
 			return $mailer->send();
 
 		} catch ( phpmailerException $e ) {
-			$this->logger->error( 'Failed to send message: {message}', array(
+			$this->logger->error( 'Failed to send message: {message}', [
 				'method' => __METHOD__,
 				'exception' => $e,
 				'message' => $e->getMessage(),
-			) );
+			] );
 		}
 	}
 
@@ -95,7 +96,7 @@ class Mailer {
 	 * settings
 	 */
 	protected function createMailer( $settings = null ) {
-		$settings = is_array( $settings ) ? $settings : array();
+		$settings = is_array( $settings ) ? $settings : [];
 		$mailer = new PHPMailer( true );
 		foreach ( array_merge( $this->settings, $settings ) as $key => $value ) {
 			$mailer->set( $key, $value );

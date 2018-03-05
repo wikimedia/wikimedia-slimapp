@@ -59,18 +59,19 @@ abstract class AbstractDao {
 		$this->logger = $logger ?: new \Psr\Log\NullLogger();
 
 		$this->dbh = new PDO( $dsn, $user, $pass,
-			array(
+			[
 				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 				PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-			)
+			]
 		);
 	}
 
 	/**
 	 * Start a new transaction
-	 * If already a transaction has been started, it will only
-	 * increment the counter. This method is useful
-	 * in nested transactions.
+	 *
+	 * If already a transaction has been started, it will only increment the
+	 * counter. This method is useful in nested transactions.
+	 * @return bool True on success, false on failure.
 	 */
 	protected function transactionStart() {
 		if ( $this->transactionCounter == 0 ) {
@@ -83,9 +84,11 @@ abstract class AbstractDao {
 
 	/**
 	 * Commit a transaction
-	 * If the transaction counter is zero, commit
-	 * the transaction otherwise decrement the transaction counter.
-	 * This method is useful in nested transactions.
+	 *
+	 * If the transaction counter is zero, commit the transaction otherwise
+	 * decrement the transaction counter. This method is useful in nested
+	 * transactions.
+	 * @return bool True on success, false on failure.
 	 */
 	protected function transactionCommit() {
 		$this->transactionCounter--;
@@ -97,9 +100,11 @@ abstract class AbstractDao {
 
 	/**
 	 * Rollback a transaction
+	 *
 	 * If the transaction counter is greater than 0, set it to
-	 * 0 and rollback the transaction. This method is useful
-	 * in nested transactions.
+	 * 0 and rollback the transaction. This method is useful in nested
+	 * transactions.
+	 * @return bool True on success, false on failure.
 	 */
 	protected function transactionRollback() {
 		if ( $this->transactionCounter >= 0 ) {
@@ -123,7 +128,7 @@ abstract class AbstractDao {
 	 * @param array $values Values to bind
 	 */
 	protected function bind( $stmt, $values ) {
-		$values = $values ?: array();
+		$values = $values ?: [];
 
 		if ( (bool)count( array_filter( array_keys( $values ), 'is_string' ) ) ) {
 			// associative array provided
@@ -181,7 +186,7 @@ abstract class AbstractDao {
 	 * @return array Result rows
 	 */
 	protected function fetchAll( $sql, $params = null ) {
-		$this->logger->debug( $sql, $params ?: array() );
+		$this->logger->debug( $sql, $params ?: [] );
 		$stmt = $this->dbh->prepare( $sql );
 		$this->bind( $stmt, $params );
 		$stmt->execute();
@@ -227,12 +232,12 @@ abstract class AbstractDao {
 
 		} catch ( PDOException $e ) {
 			$this->transactionRollback();
-			$this->logger->error( 'Update failed.', array(
+			$this->logger->error( 'Update failed.', [
 				'method' => __METHOD__,
 				'exception' => $e,
 				'sql' => $sql,
 				'params' => $params,
-			) );
+			] );
 			return false;
 		}
 	}
@@ -255,12 +260,12 @@ abstract class AbstractDao {
 
 		} catch ( PDOException $e ) {
 			$this->transactionRollback();
-			$this->logger->error( 'Insert failed.', array(
+			$this->logger->error( 'Insert failed.', [
 				'method' => __METHOD__,
 				'exception' => $e,
 				'sql' => $sql,
 				'params' => $params,
-			) );
+			] );
 			return false;
 		}
 	}
@@ -314,7 +319,7 @@ abstract class AbstractDao {
 	 * @return string New string
 	 */
 	protected static function concat( /*varags*/ ) {
-		$args = array();
+		$args = [];
 		foreach ( func_get_args() as $arg ) {
 			if ( is_array( $arg ) ) {
 				$args = array_merge( $args, $arg );
