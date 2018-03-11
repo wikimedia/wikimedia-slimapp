@@ -125,6 +125,13 @@ class Password {
 	 * entropy sources of random data can be found
 	 */
 	public static function getBytes( $count, $allowWeak = false ) {
+		if ( function_exists( 'random_bytes' ) ) {
+			$bytes = random_bytes( $count );
+			if ( strlen( $bytes ) === $count ) {
+				return $bytes;
+			}
+		}
+
 		if ( function_exists( 'mcrypt_create_iv' ) ) {
 			$bytes = mcrypt_create_iv( $count, MCRYPT_DEV_URANDOM );
 
