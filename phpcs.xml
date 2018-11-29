@@ -27,4 +27,7 @@
   <rule ref="MediaWiki.Commenting.FunctionComment.DefaultNullTypeParam">
       <severity>0</severity>
   </rule>
+  <rule ref="Generic.PHP.DeprecatedFunctions.Deprecated">
+      <severity>0</severity>
+  </rule>
 </ruleset>
