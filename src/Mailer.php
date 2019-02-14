@@ -23,8 +23,8 @@
 
 namespace Wikimedia\Slimapp;
 
-use \PHPMailer;
 use \phpmailerException;
+use PHPMailer\PHPMailer\PHPMailer;
 use Psr\Log\LoggerInterface;
 
 /**
