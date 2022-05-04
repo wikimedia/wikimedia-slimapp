@@ -23,8 +23,10 @@
 
 namespace Wikimedia\Slimapp;
 
-use Wikimedia\Slimapp\Dao\AbstractDao;
+use Slim\Slim;
 use Wikimedia\SimpleI18n\I18nContext;
+use Wikimedia\SimpleI18n\Message;
+use Wikimedia\Slimapp\Dao\AbstractDao;
 
 /**
  * Page controller.
@@ -35,35 +37,35 @@ use Wikimedia\SimpleI18n\I18nContext;
 class Controller {
 
 	/**
-	 * @var \Slim\Slim $slim
+	 * @var Slim
 	 */
 	protected $slim;
 
 	/**
-	 * @var AbstractDao $dao
+	 * @var AbstractDao
 	 */
 	protected $dao;
 
 	/**
-	 * @var Form $form
+	 * @var Form
 	 */
 	protected $form;
 
 	/**
-	 * @var Mailer $mailer
+	 * @var Mailer
 	 */
 	protected $mailer;
 
 	/**
-	 * @var I18nContext $i18nctx
+	 * @var I18nContext
 	 */
 	protected $i18nctx;
 
 	/**
-	 * @param \Slim\Slim $slim
+	 * @param Slim|null $slim
 	 */
-	public function __construct( \Slim\Slim $slim = null ) {
-		$this->slim = $slim ?: \Slim\Slim::getInstance();
+	public function __construct( Slim $slim = null ) {
+		$this->slim = $slim ?: Slim::getInstance();
 		$this->form = new Form( $this->slim->log );
 	}
 
@@ -147,7 +149,7 @@ class Controller {
 	 * Handle access to undefined member variables by proxying to the Slim
 	 * member.
 	 *
-	 * @param string $name Memeber name
+	 * @param string $name Member name
 	 * @return mixed
 	 */
 	public function __get( $name ) {
@@ -163,9 +165,9 @@ class Controller {
 	protected function flashGet( $key ) {
 		if ( isset( $this->slim->environment['slim.flash'] ) ) {
 			return $this->slim->environment['slim.flash'][$key];
-		} else {
-			return null;
 		}
+
+		return null;
 	}
 
 	/**
@@ -173,7 +175,7 @@ class Controller {
 	 *
 	 * @param string $key Message name
 	 * @param array $params Parameters to add to the message
-	 * @return \Wikimedia\SimpleI18n\Message
+	 * @return Message
 	 */
 	protected function msg( $key, $params = [] ) {
 		return $this->i18nctx->message( $key, $params );
@@ -185,7 +187,7 @@ class Controller {
 	 * @param int $total Total records
 	 * @param int $current Current page number (0-indexed)
 	 * @param int $pageSize Number of items per page
-	 * @param int $around Numer of pages to show on each side of current
+	 * @param int $around Number of pages to show on each side of current
 	 * @return array Page count, first page index, last page index
 	 */
 	protected function pagination( $total, $current, $pageSize, $around = 4 ) {

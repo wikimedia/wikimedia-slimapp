@@ -23,22 +23,25 @@
 
 namespace Wikimedia\Slimapp\Dao;
 
+use PHPUnit\Framework\TestCase;
+use ReflectionClass;
+
 /**
  * @coversDefaultClass \Wikimedia\Slimapp\Dao\AbstractDao
  * @author Bryan Davis <bd808@wikimedia.org>
  * @copyright © 2015 Bryan Davis, Wikimedia Foundation and contributors.
  */
-class AbstractDaoTest extends \PHPUnit\Framework\TestCase {
+class AbstractDaoTest extends TestCase {
 
 	/**
 	 * @dataProvider provideBuildWhere
 	 */
 	public function testBuildWhere( array $where, $conjunction, $expect ) {
-		$fixture = $this->getMockBuilder( 'Wikimedia\Slimapp\Dao\AbstractDao' )
+		$fixture = $this->getMockBuilder( AbstractDao::class )
 			->disableOriginalConstructor()
 			->getMockForAbstractClass();
 
-		$clazz = new \ReflectionClass( 'Wikimedia\Slimapp\Dao\AbstractDao' );
+		$clazz = new ReflectionClass( AbstractDao::class );
 		$buildWhere = $clazz->getMethod( 'buildWhere' );
 		$buildWhere->setAccessible( true );
 
@@ -64,11 +67,11 @@ class AbstractDaoTest extends \PHPUnit\Framework\TestCase {
 	 * @dataProvider provideBuildHaving
 	 */
 	public function testBuildHaving( array $having, $conjunction, $expect ) {
-		$fixture = $this->getMockBuilder( 'Wikimedia\Slimapp\Dao\AbstractDao' )
+		$fixture = $this->getMockBuilder( AbstractDao::class )
 			->disableOriginalConstructor()
 			->getMockForAbstractClass();
 
-		$clazz = new \ReflectionClass( 'Wikimedia\Slimapp\Dao\AbstractDao' );
+		$clazz = new ReflectionClass( AbstractDao::class );
 		$buildHaving = $clazz->getMethod( 'buildHaving' );
 		$buildHaving->setAccessible( true );
 

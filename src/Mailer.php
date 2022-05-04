@@ -23,9 +23,10 @@
 
 namespace Wikimedia\Slimapp;
 
-use \phpmailerException;
+use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * Wrapper around PHPMailer
@@ -36,12 +37,12 @@ use Psr\Log\LoggerInterface;
 class Mailer {
 
 	/**
-	 * @var LoggerInterface $logger
+	 * @var LoggerInterface
 	 */
 	protected $logger;
 
 	/**
-	 * @var array $settings
+	 * @var array
 	 */
 	protected $settings = [
 		'AllowEmpty' => false,
@@ -59,13 +60,13 @@ class Mailer {
 	 * @param LoggerInterface $logger Log channel
 	 */
 	public function __construct( $settings = [], $logger = null ) {
-		$this->logger = $logger ?: new \Psr\Log\NullLogger();
+		$this->logger = $logger ?: new NullLogger();
 		$settings = is_array( $settings ) ? $settings : [];
 		$this->settings = array_merge( $this->settings, $settings );
 	}
 
 	/**
-	 * @param string $to Recipent(s)
+	 * @param string $to Recipient(s)
 	 * @param string $subject Subject
 	 * @param string $message Message
 	 * @param array $settings Additional settings
@@ -79,12 +80,13 @@ class Mailer {
 			$mailer->Body = $message;
 			return $mailer->send();
 
-		} catch ( phpmailerException $e ) {
+		} catch ( Exception $e ) {
 			$this->logger->error( 'Failed to send message: {message}', [
 				'method' => __METHOD__,
 				'exception' => $e,
 				'message' => $e->getMessage(),
 			] );
+			return false;
 		}
 	}
 

@@ -23,12 +23,14 @@
 
 namespace Wikimedia\Slimapp;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * @coversDefaultClass \Wikimedia\Slimapp\Config
  * @author Bryan Davis <bd808@wikimedia.org>
  * @copyright © 2015 Bryan Davis, Wikimedia Foundation and contributors.
  */
-class ConfigTest extends \PHPUnit\Framework\TestCase {
+class ConfigTest extends TestCase {
 
 	public function testLoad() {
 		Config::load( __DIR__ . '/fixtures/ConfigTest.env' );
@@ -59,7 +61,7 @@ class ConfigTest extends \PHPUnit\Framework\TestCase {
 	public function testGetStrDefault() {
 		$name = 'CONFIG_TEST_VALUE_NOT_SET';
 		putenv( $name );
-		$this->assertSame( false, getenv( $name ) );
+		$this->assertFalse( getenv( $name ) );
 
 		$default = __METHOD__;
 		$this->assertSame( $default, Config::getStr( $name, $default ) );
@@ -68,9 +70,9 @@ class ConfigTest extends \PHPUnit\Framework\TestCase {
 	public function testGetDateUnset() {
 		$name = 'CONFIG_TEST_VALUE_NOT_SET';
 		putenv( $name );
-		$this->assertSame( false, getenv( $name ) );
+		$this->assertFalse( getenv( $name ) );
 
-		$this->assertSame( false, Config::getDate( $name ) );
+		$this->assertFalse( Config::getDate( $name ) );
 	}
 
 }

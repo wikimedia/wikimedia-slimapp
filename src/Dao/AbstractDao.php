@@ -23,9 +23,12 @@
 
 namespace Wikimedia\Slimapp\Dao;
 
-use \PDO;
-use \PDOException;
+use PDO;
+use PDOException;
+use PDOStatement;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
+use stdClass;
 
 /**
  * Base class for data access objects.
@@ -36,16 +39,17 @@ use Psr\Log\LoggerInterface;
 abstract class AbstractDao {
 
 	/**
-	 * @var PDO $db
+	 * @var PDO
 	 */
 	protected $dbh;
 
 	/**
-	 * @var LoggerInterface $logger
+	 * @var LoggerInterface
 	 */
 	protected $logger;
+
 	/**
-	 * @var Integer $transactionCounter Used for keeping track of transaction status
+	 * @var int Used for keeping track of transaction status
 	 */
 	protected $transactionCounter = 0;
 
@@ -56,7 +60,7 @@ abstract class AbstractDao {
 	 * @param LoggerInterface $logger Log channel
 	 */
 	public function __construct( $dsn, $user, $pass, $logger = null ) {
-		$this->logger = $logger ?: new \Psr\Log\NullLogger();
+		$this->logger = $logger ?: new NullLogger();
 
 		$this->dbh = new PDO( $dsn, $user, $pass,
 			[
@@ -74,7 +78,7 @@ abstract class AbstractDao {
 	 * @return bool True on success, false on failure.
 	 */
 	protected function transactionStart() {
-		if ( $this->transactionCounter == 0 ) {
+		if ( $this->transactionCounter === 0 ) {
 			$this->transactionCounter++;
 			return $this->dbh->beginTransaction();
 		}
@@ -92,7 +96,7 @@ abstract class AbstractDao {
 	 */
 	protected function transactionCommit() {
 		$this->transactionCounter--;
-		if ( $this->transactionCounter == 0 ) {
+		if ( $this->transactionCounter === 0 ) {
 			return $this->dbh->commit();
 		}
 		return $this->transactionCounter >= 0;
@@ -124,31 +128,30 @@ abstract class AbstractDao {
 	 * parameters in places like LIMIT clauses where binding as a string (the
 	 * default type for PDO binds) will cause a syntax error.
 	 *
-	 * @param \PDOStatement $stmt Previously prepared statement
+	 * @param PDOStatement $stmt Previously prepared statement
 	 * @param array $values Values to bind
 	 */
 	protected function bind( $stmt, $values ) {
 		$values = $values ?: [];
 
-		if ( (bool)count( array_filter( array_keys( $values ), 'is_string' ) ) ) {
+		if ( count( array_filter( array_keys( $values ), 'is_string' ) ) ) {
 			// associative array provided
 			foreach ( $values as $key => $value ) {
 				// infer bind type from key prefix
-				list( $prefix, $ignored ) = explode( '_', "{$key}_", 2 );
+				[ $prefix, ] = explode( '_', "{$key}_", 2 );
 
-				$type = \PDO::PARAM_STR;
 				switch ( $prefix ) {
 					case 'int':
-						$type = \PDO::PARAM_INT;
+						$type = PDO::PARAM_INT;
 						break;
 					case 'bool':
-						$type = \PDO::PARAM_BOOL;
+						$type = PDO::PARAM_BOOL;
 						break;
 					case 'null':
-						$type = \PDO::PARAM_NULL;
+						$type = PDO::PARAM_NULL;
 						break;
 					default:
-						$type = \PDO::PARAM_STR;
+						$type = PDO::PARAM_STR;
 				}
 
 				$stmt->bindValue( $key, $value, $type );
@@ -203,10 +206,10 @@ abstract class AbstractDao {
 	 *
 	 * @param string $sql SQL
 	 * @param array $params Prepared statement parameters
-	 * @return object StdClass with rows and found memebers
+	 * @return stdClass StdClass with rows and found members
 	 */
 	protected function fetchAllWithFound( $sql, $params = null ) {
-		$ret = new \StdClass;
+		$ret = new stdClass;
 		$ret->rows = $this->fetchAll( $sql, $params );
 
 		$ret->found = $this->fetch( 'SELECT FOUND_ROWS() AS found' );
@@ -246,8 +249,8 @@ abstract class AbstractDao {
 	 * Prepare and execute an SQL statement in a transaction.
 	 *
 	 * @param string $sql SQL
-	 * @param array $params Prepared statement parameters
-	 * @return int|bool Last insert id or false if an exception was generated
+	 * @param array|null $params Prepared statement parameters
+	 * @return string|false Last insert id or false if an exception was generated
 	 */
 	protected function insert( $sql, $params = null ) {
 		$stmt = $this->dbh->prepare( $sql );
@@ -338,7 +341,7 @@ abstract class AbstractDao {
 	 * @return array List of bind parameters (eg ':field1)
 	 */
 	protected static function makeBindParams( array $list ) {
-		return array_map( function ( $elm ) {
+		return array_map( static function ( $elm ) {
 			return ":{$elm}";
 		}, $list );
 	}

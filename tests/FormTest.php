@@ -23,13 +23,15 @@
 
 namespace Wikimedia\Slimapp;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * @coversDefaultClass \Wikimedia\Slimapp\Form
  * @uses \Wikimedia\Slimapp\Form
  * @author Bryan Davis <bd808@wikimedia.org>
  * @copyright © 2015 Bryan Davis, Wikimedia Foundation and contributors.
  */
-class FormTest extends \PHPUnit\Framework\TestCase {
+class FormTest extends TestCase {
 
 	public function testRequired() {
 		$form = new Form();
@@ -85,7 +87,7 @@ class FormTest extends \PHPUnit\Framework\TestCase {
 		$this->assertTrue( $form->validate(), 'Form should be valid' );
 		$vals = $form->getValues();
 		$this->assertArrayHasKey( 'foo', $vals );
-		$this->assertEquals( '', $vals['foo'] );
+		$this->assertEmpty( $vals['foo'] );
 		$this->assertNotContains( 'foo', $form->getErrors() );
 	}
 

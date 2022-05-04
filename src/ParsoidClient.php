@@ -24,6 +24,7 @@
 namespace Wikimedia\Slimapp;
 
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * Simple client for sending wikitext to RESTBase to be converted into html.
@@ -39,17 +40,17 @@ use Psr\Log\LoggerInterface;
 class ParsoidClient {
 
 	/**
-	 * @var string $url
+	 * @var string
 	 */
 	protected $url;
 
 	/**
-	 * @var string $cache
+	 * @var string
 	 */
 	protected $cache;
 
 	/**
-	 * @var LoggerInterface $logger
+	 * @var LoggerInterface
 	 */
 	protected $logger;
 
@@ -59,7 +60,7 @@ class ParsoidClient {
 	 * @param LoggerInterface $logger Log channel
 	 */
 	public function __construct( $url, $cache, $logger = null ) {
-		$this->logger = $logger ?: new \Psr\Log\NullLogger();
+		$this->logger = $logger ?: new NullLogger();
 		$this->url = $url;
 		$this->cache = $cache;
 	}

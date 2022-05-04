@@ -23,6 +23,19 @@
 
 namespace Wikimedia\Slimapp;
 
+use Monolog\Formatter\LogstashFormatter;
+use Monolog\Handler\Udp2logHandler;
+use Monolog\Logger;
+use Monolog\Processor\ProcessIdProcessor;
+use Monolog\Processor\PsrLogMessageProcessor;
+use Monolog\Processor\UidProcessor;
+use Monolog\Processor\WebProcessor;
+use Psr\Log\LogLevel;
+use Slim\Helper\Set;
+use Slim\Slim;
+use Slim\View;
+use Slim\Views\Twig;
+
 /**
  * Grants review application.
  *
@@ -32,12 +45,12 @@ namespace Wikimedia\Slimapp;
 abstract class AbstractApp {
 
 	/**
-	 * @var string $deployDir
+	 * @var string
 	 */
 	protected $deployDir;
 
 	/**
-	 * @var \Slim\Slim $slim
+	 * @var Slim
 	 */
 	protected $slim;
 
@@ -48,16 +61,16 @@ abstract class AbstractApp {
 	public function __construct( $deployDir, array $settings = [] ) {
 		$this->deployDir = $deployDir;
 
-		$this->slim = new \Slim\Slim( array_merge(
+		$this->slim = new Slim( array_merge(
 			[
 				'mode' => 'production',
 				'debug' => false,
 				'log.channel' => Config::getStr( 'LOG_CHANNEL', 'app' ),
 				'log.level' => Config::getStr(
-					'LOG_LEVEL', \Psr\Log\LogLevel::NOTICE
+					'LOG_LEVEL', LogLevel::NOTICE
 				),
 				'log.file' => Config::getStr( 'LOG_FILE', 'php://stderr' ),
-				'view' => new \Slim\Views\Twig(),
+				'view' => new Twig(),
 				'view.cache' => Config::getStr(
 					'CACHE_DIR', "{$this->deployDir}/data/cache"
 				),
@@ -92,28 +105,28 @@ abstract class AbstractApp {
 		// Replace default logger with monolog.
 		// Done before configureIoc() so subclasses can easily switch it again
 		// if desired.
-		$this->slim->container->singleton( 'log', function ( $c ) {
+		$this->slim->container->singleton( 'log', static function ( $c ) {
 			// Convert string level to Monolog integer value
 			$level = strtoupper( $c->settings['log.level'] );
 			$level = constant( "\Monolog\Logger::{$level}" );
 
-			$log = new \Monolog\Logger( $c->settings['log.channel'] );
-			$handler = new \Monolog\Handler\Udp2logHandler(
+			$log = new Logger( $c->settings['log.channel'] );
+			$handler = new Udp2logHandler(
 				$c->settings['log.file'],
 				$level
 			);
-			$handler->setFormatter( new \Monolog\Formatter\LogstashFormatter(
+			$handler->setFormatter( new LogstashFormatter(
 				$c->settings['log.channel'], null, null, '',
-				\Monolog\Formatter\LogstashFormatter::V1
+				LogstashFormatter::V1
 			) );
 			$handler->pushProcessor(
-				new \Monolog\Processor\PsrLogMessageProcessor()
+				new PsrLogMessageProcessor()
 			);
 			$handler->pushProcessor(
-				new \Monolog\Processor\ProcessIdProcessor()
+				new ProcessIdProcessor()
 			);
-			$handler->pushProcessor( new \Monolog\Processor\UidProcessor() );
-			$handler->pushProcessor( new \Monolog\Processor\WebProcessor() );
+			$handler->pushProcessor( new UidProcessor() );
+			$handler->pushProcessor( new WebProcessor() );
 			$log->pushHandler( $handler );
 			return $log;
 		} );
@@ -134,30 +147,30 @@ abstract class AbstractApp {
 	/**
 	 * Apply settings to the Slim application.
 	 *
-	 * @param \Slim\Slim $slim Application
+	 * @param Slim $slim Application
 	 */
-	abstract protected function configureSlim( \Slim\Slim $slim );
+	abstract protected function configureSlim( Slim $slim );
 
 	/**
 	 * Configure inversion of control/dependency injection container.
 	 *
-	 * @param \Slim\Helper\Set $container IOC container
+	 * @param Set $container IOC container
 	 */
-	abstract protected function configureIoc( \Slim\Helper\Set $container );
+	abstract protected function configureIoc( Set $container );
 
 	/**
 	 * Configure view behavior.
 	 *
-	 * @param \Slim\View $view Default view
+	 * @param View $view Default view
 	 */
-	abstract protected function configureView( \Slim\View $view );
+	abstract protected function configureView( View $view );
 
 	/**
 	 * Configure routes to be handled by application.
 	 *
-	 * @param \Slim\Slim $slim Application
+	 * @param Slim $slim Application
 	 */
-	abstract protected function configureRoutes( \Slim\Slim $slim );
+	abstract protected function configureRoutes( Slim $slim );
 
 	/**
 	 * Main entry point for all requests.
@@ -173,17 +186,17 @@ abstract class AbstractApp {
 
 	/**
 	 * Add a redirect route to the app.
-	 * @param \Slim\Slim $slim App
+	 * @param Slim $slim App
 	 * @param string $name Page name
 	 * @param string $to Redirect target route name
 	 * @param string $routeName Name for the route
 	 */
 	public static function redirect(
-		\Slim\Slim $slim, $name, $to, $routeName = null
+		Slim $slim, $name, $to, $routeName = null
 	) {
 		$routeName = $routeName ?: $name;
 
-		$slim->get( $name, function () use ( $slim, $name, $to ) {
+		$slim->get( $name, static function () use ( $slim, $to ) {
 			$slim->flashKeep();
 			$slim->redirect( $slim->urlFor( $to ) );
 		} )->name( $routeName );
@@ -191,16 +204,16 @@ abstract class AbstractApp {
 
 	/**
 	 * Add a static template route to the app.
-	 * @param \Slim\Slim $slim App
+	 * @param Slim $slim App
 	 * @param string $name Page name
 	 * @param string $routeName Name for the route
 	 */
 	public static function template(
-		\Slim\Slim $slim, $name, $routeName = null
+		Slim $slim, $name, $routeName = null
 	) {
 		$routeName = $routeName ?: $name;
 
-		$slim->get( $name, function () use ( $slim, $name ) {
+		$slim->get( $name, static function () use ( $slim, $name ) {
 			$slim->render( "{$name}.html" );
 		} )->name( $routeName );
 	}

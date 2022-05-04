@@ -23,14 +23,18 @@
 
 namespace Wikimedia\Slimapp;
 
+use Twig_Extension;
+use Twig_SimpleFilter;
+use Twig_SimpleFunction;
+
 /**
  * @author Bryan Davis <bd808@wikimedia.org>
  * @copyright © 2015 Bryan Davis, Wikimedia Foundation and contributors.
  */
-class TwigExtension extends \Twig_Extension {
+class TwigExtension extends Twig_Extension {
 
 	/**
-	 * @var ParsoidClient $parsoid
+	 * @var ParsoidClient
 	 */
 	protected $parsoid;
 
@@ -53,7 +57,7 @@ class TwigExtension extends \Twig_Extension {
 	 */
 	public function getFunctions() {
 		return [
-			new \Twig_SimpleFunction( 'qsMerge', [ $this, 'qsMerge' ] ),
+			new Twig_SimpleFunction( 'qsMerge', [ $this, 'qsMerge' ] ),
 		];
 	}
 
@@ -62,7 +66,7 @@ class TwigExtension extends \Twig_Extension {
 	 */
 	public function getFilters() {
 		return [
-			new \Twig_SimpleFilter(
+			new Twig_SimpleFilter(
 				'wikitext', [ $this, 'wikitextFilterCallback' ],
 				[ 'is_safe' => [ 'html' ] ]
 			),

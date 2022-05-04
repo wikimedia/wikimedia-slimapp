@@ -7,7 +7,7 @@ Common classes to help with creating an application using the
 
 System Requirements
 -------------------
-* PHP >= 5.5.9
+* PHP >= 7.2.0
 
 Configuration
 -------------

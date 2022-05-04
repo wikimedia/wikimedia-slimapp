@@ -23,8 +23,16 @@
 
 namespace Wikimedia\Slimapp;
 
+use InvalidArgumentException;
+use const FILTER_FLAG_STRIP_HIGH;
+use const FILTER_FLAG_STRIP_LOW;
+use const FILTER_NULL_ON_FAILURE;
+use const FILTER_SANITIZE_STRING;
+use const FILTER_VALIDATE_BOOLEAN;
+
 /**
  * Configuration registry.
+ *
  * @author Bryan Davis <bd808@wikimedia.org>
  * @copyright © 2015 Bryan Davis, Wikimedia Foundation and contributors.
  */
@@ -38,8 +46,8 @@ class Config {
 	 */
 	public static function getBool( $name, $default = false ) {
 		$var = getenv( $name );
-		$val = filter_var( $var, \FILTER_VALIDATE_BOOLEAN, \FILTER_NULL_ON_FAILURE );
-		return ( $val === null ) ? $default : $val;
+		$val = filter_var( $var, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE );
+		return $val ?? $default;
 	}
 
 	/**
@@ -52,8 +60,8 @@ class Config {
 		$var = getenv( $name );
 		if ( $var !== false ) {
 			$var = filter_var( $var,
-				\FILTER_SANITIZE_STRING,
-				\FILTER_FLAG_STRIP_LOW | \FILTER_FLAG_STRIP_HIGH
+				FILTER_SANITIZE_STRING,
+				FILTER_FLAG_STRIP_LOW | FILTER_FLAG_STRIP_HIGH
 			);
 		}
 		return ( $var === false ) ? $default : $var;
@@ -80,19 +88,19 @@ class Config {
 	 */
 	public static function load( $file ) {
 		if ( !is_readable( $file ) ) {
-			throw new \InvalidArgumentException( "File '{$file}' is not readable." );
+			throw new InvalidArgumentException( "File '{$file}' is not readable." );
 		}
 
 		$settings = parse_ini_file( $file );
 
 		foreach ( $settings as $key => $value ) {
-				// Store in super globals
-				$_ENV[$key] = $value;
-				$_SERVER[$key] = $value;
+			// Store in super globals
+			$_ENV[$key] = $value;
+			$_SERVER[$key] = $value;
 
-				// Also store in process env vars
-				putenv( "{$key}={$value}" );
-		} // end foreach settings
+			// Also store in process env vars
+			putenv( "{$key}={$value}" );
+		}
 	}
 
 }

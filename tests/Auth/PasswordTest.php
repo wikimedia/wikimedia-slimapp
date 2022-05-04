@@ -23,13 +23,15 @@
 
 namespace Wikimedia\Slimapp\Auth;
 
+use PHPUnit\Framework\TestCase;
+
 /**
  * @coversDefaultClass \Wikimedia\Slimapp\Auth\Password
  * @uses \Wikimedia\Slimapp\Auth\Password
  * @author Bryan Davis <bd808@wikimedia.org>
  * @copyright © 2015 Bryan Davis, Wikimedia Foundation and contributors.
  */
-class PasswordTest extends \PHPUnit\Framework\TestCase {
+class PasswordTest extends TestCase {
 
 	/**
 	 * @covers ::encodePassword
@@ -56,7 +58,7 @@ class PasswordTest extends \PHPUnit\Framework\TestCase {
 	 */
 	public function testRandomPassword() {
 		// I've always wondered how to write a phpunit test to decide if random is
-		// random. For now I'll settle for testing to see if I get the expected
+		// random. For now, I'll settle for testing to see if I get the expected
 		// number of characters.
 		$p = Password::randomPassword( 16 );
 		$this->assertEquals( 16, strlen( $p ) );
@@ -68,7 +70,7 @@ class PasswordTest extends \PHPUnit\Framework\TestCase {
 	public function testHashEquals() {
 		// Do not count warnings from a native hash_equals() implementation
 		// as errors.
-		\PHPUnit_Framework_Error_Warning::$enabled = false;
+		// \PHPUnit\Framework\Error\Warning::$enabled = false;
 
 		$this->assertFalse( Password::hashEquals( false, '' ) );
 		$this->assertFalse( Password::hashEquals( '', false ) );

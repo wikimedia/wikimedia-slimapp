@@ -23,6 +23,8 @@
 
 namespace Wikimedia\Slimapp\Auth;
 
+use InvalidArgumentException;
+
 /**
  * Password management utility.
  *
@@ -35,7 +37,7 @@ class Password {
 	 * Blowfish hashing salt prefix for crypt.
 	 * @var string BLOWFISH_PREFIX
 	 */
-	const BLOWFISH_PREFIX = '$2y$';
+	private const BLOWFISH_PREFIX = '$2y$';
 
 	/**
 	 * Compare a plain text string to a stored password hash.
@@ -132,15 +134,8 @@ class Password {
 			}
 		}
 
-		if ( function_exists( 'mcrypt_create_iv' ) ) {
-			$bytes = mcrypt_create_iv( $count, MCRYPT_DEV_URANDOM );
-
-			if ( strlen( $bytes ) === $count ) {
-				return $bytes;
-			}
-		}
-
 		if ( function_exists( 'openssl_random_pseudo_bytes' ) ) {
+			$strong = null;
 			$bytes = openssl_random_pseudo_bytes( $count, $strong );
 
 			if ( $strong && strlen( $bytes ) === $count ) {
@@ -152,7 +147,7 @@ class Password {
 			// @codingStandardsIgnoreStart : Silencing errors is discouraged
 			$fh = @fopen( '/dev/urandom', 'rb' );
 			// @codingStandardsIgnoreEnd
-			if ( false !== $fh ) {
+			if ( $fh !== false ) {
 				$bytes = '';
 				$have = 0;
 				while ( $have < $count ) {
@@ -196,24 +191,22 @@ class Password {
 	 * @return bool True if blowfish, false otherwise.
 	 */
 	public static function isBlowfishHash( $hash ) {
-		$peek = strlen( self::BLOWFISH_PREFIX );
-		return strlen( $hash ) == 60 &&
-			substr( $hash, 0, $peek ) == self::BLOWFISH_PREFIX;
+		return strlen( $hash ) === 60 && strpos( $hash, self::BLOWFISH_PREFIX ) === 0;
 	}
 
 	// @codingStandardsIgnoreStart : Line exceeds 100 characters
-	const CHARSET_PRINTABLE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!"#$%&\'()*+,-./:;<=>?@[\]^_`{|}~';
+	private const CHARSET_PRINTABLE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!"#$%&\'()*+,-./:;<=>?@[\]^_`{|}~';
 	// @codingStandardsIgnoreEnd
-	const CHARSET_UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-	const CHARSET_LOWER = 'abcdefghijklmnopqrstuvwxyz';
-	const CHARSET_DIGIT = '0123456789';
-	const CHARSET_ALPHANUM = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-	const CHARSET_SYMBOL = '!"#$%&\'()*+,-./:;<=>?@[\]^_`{|}~';
+	private const CHARSET_UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	private const CHARSET_LOWER = 'abcdefghijklmnopqrstuvwxyz';
+	private const CHARSET_DIGIT = '0123456789';
+	private const CHARSET_ALPHANUM = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	private const CHARSET_SYMBOL = '!"#$%&\'()*+,-./:;<=>?@[\]^_`{|}~';
 
 	/**
 	 * Generate a random password.
 	 *
-	 * Note: This is not the worlds greatest password generation algorithm. It
+	 * Note: This is not the world's greatest password generation algorithm. It
 	 * uses a selection technique that has some bias based on modulo
 	 * arithmetic. If you need a truely random password you'll need to look
 	 * somewhere else. If you just need a temporary password to email to a user
@@ -263,20 +256,20 @@ class Password {
 		if ( function_exists( 'hash_equals' ) ) {
 			return hash_equals( $known, $input );
 
-		} else {
-			// hash_equals() polyfill taken from MediaWiki
-			$len = strlen( $known );
-			if ( $len !== strlen( $input ) ) {
-				return false;
-			}
-
-			$result = 0;
-			for ( $i = 0; $i < $len; $i++ ) {
-				$result |= ord( $known[$i] ) ^ ord( $input[$i] );
-			}
-
-			return $result === 0;
 		}
+
+		// hash_equals() polyfill taken from MediaWiki
+		$len = strlen( $known );
+		if ( $len !== strlen( $input ) ) {
+			return false;
+		}
+
+		$result = 0;
+		for ( $i = 0; $i < $len; $i++ ) {
+			$result |= ord( $known[$i] ) ^ ord( $input[$i] );
+		}
+
+		return $result === 0;
 	}
 
 	/**

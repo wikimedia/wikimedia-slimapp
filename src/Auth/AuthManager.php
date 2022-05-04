@@ -31,11 +31,11 @@ namespace Wikimedia\Slimapp\Auth;
  */
 class AuthManager {
 
-	const USER_SESSION_KEY = 'AUTH_USER';
-	const NEXTPAGE_SESSION_KEY = 'AUTH_NEXTPAGE';
+	private const USER_SESSION_KEY = 'AUTH_USER';
+	public const NEXTPAGE_SESSION_KEY = 'AUTH_NEXTPAGE';
 
 	/**
-	 * @var UserManager $manager
+	 * @var UserManager
 	 */
 	protected $manager;
 
@@ -51,12 +51,7 @@ class AuthManager {
 	 * @return UserData User information or null if not available
 	 */
 	public function getUserData() {
-		if ( isset( $_SESSION[self::USER_SESSION_KEY] ) ) {
-			return $_SESSION[self::USER_SESSION_KEY];
-
-		} else {
-			return null;
-		}
+		return $_SESSION[self::USER_SESSION_KEY] ?? null;
 	}
 
 	/**
@@ -105,9 +100,9 @@ class AuthManager {
 			$this->login( $user );
 			return true;
 
-		} else {
-			return false;
 		}
+
+		return false;
 	}
 
 	/**

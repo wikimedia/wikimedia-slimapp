@@ -23,15 +23,17 @@
 
 namespace Wikimedia\Slimapp;
 
+use Slim\Middleware;
+
 /**
  * Middleware to add headers to the response.
  *
- * Allows arbitrary headers to be added to to each response.
+ * Allows arbitrary headers to be added to each response.
  *
  * @author Bryan Davis <bd808@wikimedia.org>
  * @copyright © 2015 Bryan Davis, Wikimedia Foundation and contributors.
  */
-class HeaderMiddleware extends \Slim\Middleware {
+class HeaderMiddleware extends Middleware {
 
 	/**
 	 * @var array

@@ -23,6 +23,8 @@
 
 namespace Wikimedia\Slimapp;
 
+use Slim\Middleware;
+
 /**
  * Middleware to manage Cross Site Request Forgery (CSRF) mitigation.
  *
@@ -34,9 +36,9 @@ namespace Wikimedia\Slimapp;
  * @author Bryan Davis <bd808@wikimedia.org>
  * @copyright © 2015 Bryan Davis, Wikimedia Foundation and contributors.
  */
-class CsrfMiddleware extends \Slim\Middleware {
+class CsrfMiddleware extends Middleware {
 
-	const PARAM = 'csrf_token';
+	private const PARAM = 'csrf_token';
 
 	/**
 	 * Handle CSRF validation and view injection.

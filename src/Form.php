@@ -23,7 +23,21 @@
 
 namespace Wikimedia\Slimapp;
 
+use DateTime;
+use Exception;
+use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
+use const FILTER_CALLBACK;
+use const FILTER_REQUIRE_ARRAY;
+use const FILTER_UNSAFE_RAW;
+use const FILTER_VALIDATE_BOOLEAN;
+use const FILTER_VALIDATE_EMAIL;
+use const FILTER_VALIDATE_FLOAT;
+use const FILTER_VALIDATE_INT;
+use const FILTER_VALIDATE_IP;
+use const FILTER_VALIDATE_REGEXP;
+use const FILTER_VALIDATE_URL;
 
 /**
  * Collect and validate user input.
@@ -37,25 +51,25 @@ use Psr\Log\LoggerInterface;
 class Form {
 
 	/**
-	 * @var LoggerInterface $logger
+	 * @var LoggerInterface
 	 */
 	protected $logger;
 
 	/**
 	 * Input parameters to expect.
-	 * @var array $params
+	 * @var array
 	 */
 	protected $params = [];
 
 	/**
 	 * Values received after filtering.
-	 * @var array $values
+	 * @var array
 	 */
 	protected $values = [];
 
 	/**
 	 * Fields with errors.
-	 * @var array $errors
+	 * @var array
 	 */
 	protected $errors = [];
 
@@ -63,7 +77,7 @@ class Form {
 	 * @param LoggerInterface $logger Log channel
 	 */
 	public function __construct( $logger = null ) {
-		$this->logger = $logger ?: new \Psr\Log\NullLogger();
+		$this->logger = $logger ?: new NullLogger();
 	}
 
 	/**
@@ -102,11 +116,11 @@ class Form {
 			unset( $options['validate'] );
 		}
 
-		if ( $filter === \FILTER_CALLBACK ) {
+		if ( $filter === FILTER_CALLBACK ) {
 			if ( !isset( $options['callback'] ) ||
 				!is_callable( $options['callback'] )
 			) {
-				throw new \InvalidArgumentException(
+				throw new InvalidArgumentException(
 					'FILTER_CALLBACK requires a valid callback.'
 				);
 			}
@@ -134,7 +148,7 @@ class Form {
 		if ( !isset( $options['default'] ) ) {
 			$options['default'] = false;
 		}
-		return $this->expect( $name, \FILTER_VALIDATE_BOOLEAN, $options );
+		return $this->expect( $name, FILTER_VALIDATE_BOOLEAN, $options );
 	}
 
 	/**
@@ -171,7 +185,7 @@ class Form {
 	 */
 	public function expectTrue( $name, $options = null ) {
 		$options = ( is_array( $options ) ) ? $options : [];
-		$options['validate'] = function ( $v ) {
+		$options['validate'] = static function ( $v ) {
 			return (bool)$v;
 		};
 		return $this->expectBool( $name, $options );
@@ -210,7 +224,7 @@ class Form {
 	 * @return Form Self, for message chaining
 	 */
 	public function expectEmail( $name, $options = null ) {
-		return $this->expect( $name, \FILTER_VALIDATE_EMAIL, $options );
+		return $this->expect( $name, FILTER_VALIDATE_EMAIL, $options );
 	}
 
 	/**
@@ -246,7 +260,7 @@ class Form {
 	 * @return Form Self, for message chaining
 	 */
 	public function expectFloat( $name, $options = null ) {
-		return $this->expect( $name, \FILTER_VALIDATE_FLOAT, $options );
+		return $this->expect( $name, FILTER_VALIDATE_FLOAT, $options );
 	}
 
 	/**
@@ -282,7 +296,7 @@ class Form {
 	 * @return Form Self, for message chaining
 	 */
 	public function expectInt( $name, $options = null ) {
-		return $this->expect( $name, \FILTER_VALIDATE_INT, $options );
+		return $this->expect( $name, FILTER_VALIDATE_INT, $options );
 	}
 
 	/**
@@ -318,7 +332,7 @@ class Form {
 	 * @return Form Self, for message chaining
 	 */
 	public function expectIp( $name, $options = null ) {
-		return $this->expect( $name, \FILTER_VALIDATE_IP, $options );
+		return $this->expect( $name, FILTER_VALIDATE_IP, $options );
 	}
 
 	/**
@@ -357,7 +371,7 @@ class Form {
 	public function expectRegex( $name, $re, $options = null ) {
 		$options = ( is_array( $options ) ) ? $options : [];
 		$options['regexp'] = $re;
-		return $this->expect( $name, \FILTER_VALIDATE_REGEXP, $options );
+		return $this->expect( $name, FILTER_VALIDATE_REGEXP, $options );
 	}
 
 	/**
@@ -396,7 +410,7 @@ class Form {
 	 * @return Form Self, for message chaining
 	 */
 	public function expectUrl( $name, $options = null ) {
-		return $this->expect( $name, \FILTER_VALIDATE_URL, $options );
+		return $this->expect( $name, FILTER_VALIDATE_URL, $options );
 	}
 
 	/**
@@ -468,7 +482,7 @@ class Form {
 	 * @return Form Self, for message chaining
 	 */
 	public function expectAnything( $name, $options = null ) {
-		return $this->expect( $name, \FILTER_UNSAFE_RAW, $options );
+		return $this->expect( $name, FILTER_UNSAFE_RAW, $options );
 	}
 
 	/**
@@ -506,8 +520,8 @@ class Form {
 	 */
 	public function expectInArray( $name, $valids, $options = null ) {
 		$options = ( is_array( $options ) ) ? $options : [];
-		$required = isset( $options['required'] ) ? $options['required'] : false;
-		$options['validate'] = function ( $val ) use ( $valids, $required ) {
+		$required = $options['required'] ?? false;
+		$options['validate'] = static function ( $val ) use ( $valids, $required ) {
 			return ( !$required && empty( $val ) ) || in_array( $val, $valids );
 		};
 		return $this->expectAnything( $name, $options );
@@ -533,7 +547,7 @@ class Form {
 	 */
 	public function expectInArrayArray( $name, $valids, $options = null ) {
 		return $this->expectInArray(
-			$name, $values, self::wantArray( $options )
+			$name, $valids, self::wantArray( $options )
 		);
 	}
 
@@ -545,7 +559,7 @@ class Form {
 	 */
 	public function requireInArrayArray( $name, $valids, $options = null ) {
 		return $this->requireInArray(
-			$name, $values, self::wantArray( $options )
+			$name, $valids, self::wantArray( $options )
 		);
 	}
 
@@ -560,21 +574,21 @@ class Form {
 	 */
 	public function expectDateTime( $name, $format, $options = null ) {
 		$options = ( is_array( $options ) ) ? $options : [];
-		$options['callback'] = function ( $value ) use ( $format ) {
+		$options['callback'] = static function ( $value ) use ( $format ) {
 			try {
-				$date = \DateTime::createFromFormat( $format, $value );
-				$formatErrors = \DateTime::getLastErrors();
+				$date = DateTime::createFromFormat( $format, $value );
+				$formatErrors = DateTime::getLastErrors();
 				if ( $formatErrors['error_count'] == 0 &&
 					$formatErrors['warning_count'] == 0
 				) {
 					return $date;
 				}
-			} catch ( \Exception $ignored ) {
+			} catch ( Exception $ignored ) {
 				// no-op
 			}
 			return false;
 		};
-		return $this->expect( $name, \FILTER_CALLBACK, $options );
+		return $this->expect( $name, FILTER_CALLBACK, $options );
 	}
 
 	/**
@@ -607,23 +621,23 @@ class Form {
 			$clean = isset( $vars[$name] ) ? $cleaned[$name] : null;
 
 			if ( $clean === false &&
-				$opt['filter'] !== \FILTER_VALIDATE_BOOLEAN
+				$opt['filter'] !== FILTER_VALIDATE_BOOLEAN
 			) {
 				$this->values[$name] = null;
 
 			} elseif ( is_array( $clean ) &&
-				( $opt['flags'] & \FILTER_REQUIRE_ARRAY ) &&
-				$opt['filter'] !== \FILTER_VALIDATE_BOOLEAN
+				( $opt['flags'] & FILTER_REQUIRE_ARRAY ) &&
+				$opt['filter'] !== FILTER_VALIDATE_BOOLEAN
 			) {
 				// Strip invalid value markers from input array
 				$this->values[$name] = [];
 				foreach ( $clean as $key => $value ) {
-					if ( $opt['filter'] !== \FILTER_VALIDATE_BOOLEAN &&
+					if ( $opt['filter'] !== FILTER_VALIDATE_BOOLEAN &&
 						$value !== false
 					) {
 						$this->values[$name][$key] = $value;
 
-					} elseif ( $opt['filter'] === \FILTER_VALIDATE_BOOLEAN &&
+					} elseif ( $opt['filter'] === FILTER_VALIDATE_BOOLEAN &&
 						$value !== null
 					) {
 						$this->values[$name][$key] = $value;
@@ -765,7 +779,7 @@ class Form {
 	 */
 	protected static function wantArray( $options ) {
 		$options = array_merge( [ 'flags' => 0 ], (array)$options );
-		$options['flags'] = $options['flags'] | \FILTER_REQUIRE_ARRAY;
+		$options['flags'] |= FILTER_REQUIRE_ARRAY;
 		return $options;
 	}
 }
