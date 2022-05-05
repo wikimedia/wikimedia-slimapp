@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<ruleset name="wikimedia-slimapp">
+	<file>.</file>
+	<exclude-pattern>coverage</exclude-pattern>
+	<exclude-pattern>vendor</exclude-pattern>
+	<exclude-pattern>doc/html</exclude-pattern>
+
+	<arg name="encoding" value="utf-8"/>
+	<arg name="extensions" value="php"/>
+	<arg name="report" value="full"/>
+	<arg name="report" value="summary"/>
+	<arg value="sp"/>
+
+	<rule ref="vendor/mediawiki/mediawiki-codesniffer/MediaWiki"/>
+	<rule ref="MediaWiki.Commenting.MissingCovers.MissingCovers">
+		<severity>0</severity>
+	</rule>
+	<rule ref="MediaWiki.Usage.SuperGlobalsUsage.SuperGlobals">
+		<severity>0</severity>
+	</rule>
+	<rule ref="MediaWiki.Commenting.FunctionComment.MissingParamComment">
+		<severity>0</severity>
+	</rule>
+	<rule ref="MediaWiki.WhiteSpace.SpaceBeforeSingleLineComment.NewLineComment">
+		<severity>0</severity>
+	</rule>
+	<rule ref="MediaWiki.Commenting.FunctionComment.DefaultNullTypeParam">
+		<severity>0</severity>
+	</rule>
+	<rule ref="Generic.PHP.DeprecatedFunctions.Deprecated">
+		<severity>0</severity>
+	</rule>
+</ruleset>
