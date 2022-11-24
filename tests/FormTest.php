@@ -87,7 +87,7 @@ class FormTest extends TestCase {
 		$this->assertTrue( $form->validate(), 'Form should be valid' );
 		$vals = $form->getValues();
 		$this->assertArrayHasKey( 'foo', $vals );
-		$this->assertEmpty( $vals['foo'] );
+		$this->assertNull( $vals['foo'] );
 		$this->assertNotContains( 'foo', $form->getErrors() );
 	}
 
