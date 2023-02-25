@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b66a953c819d6cd6ee5921b59063c90d",
+    "content-hash": "28dbb5bc549482a96dc9aedcd004bcdd",
     "packages": [
         {
             "name": "bd808/monolog-udp2log-handler",
@@ -2429,8 +2429,8 @@
     "platform": {
         "ext-curl": "*",
         "ext-pdo": "*",
-        "php": ">=7.2"
+        "php": ">=7.4"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "2.3.0"
 }
