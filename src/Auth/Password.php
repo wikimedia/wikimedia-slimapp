@@ -89,7 +89,7 @@ class Password {
 		$random = self::getBytes( 16 );
 
 		$output = self::BLOWFISH_PREFIX;
-		$output .= chr( ord( '0' ) + $cost / 10 );
+		$output .= chr( ord( '0' ) + (int)( $cost / 10 ) );
 		$output .= chr( ord( '0' ) + $cost % 10 );
 		$output .= '$';
 

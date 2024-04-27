@@ -578,8 +578,8 @@ class Form {
 			try {
 				$date = DateTime::createFromFormat( $format, $value );
 				$formatErrors = DateTime::getLastErrors();
-				if ( $formatErrors['error_count'] == 0 &&
-					$formatErrors['warning_count'] == 0
+				if ( $formatErrors === false ||
+					( $formatErrors['error_count'] == 0 && $formatErrors['warning_count'] == 0 )
 				) {
 					return $date;
 				}
