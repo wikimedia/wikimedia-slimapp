@@ -46,7 +46,7 @@
 		"fix": "phpcbf",
 		"test": [
 			"@lint",
-			"phpunit $PHPUNIT_ARGS",
+			"phpunit",
 			"@phpcs"
 		]
 	},
