@@ -121,9 +121,9 @@ class Controller {
 		$method = $this->slim->request->getMethod();
 		$mname = 'handle' . ucfirst( strtolower( $method ) );
 		if ( method_exists( $this, $mname ) ) {
-			call_user_func_array( [ $this, $mname ], $argv );
+			$this->$mname( ...$argv );
 		} else {
-			call_user_func_array( [ $this, 'handle' ], $argv );
+			$this->handle( ...$argv );
 		}
 	}
 
@@ -136,7 +136,7 @@ class Controller {
 	 */
 	public function __call( $name, $args ) {
 		if ( method_exists( $this->slim, $name ) ) {
-			return call_user_func_array( [ $this->slim, $name ], $args );
+			return $this->slim->$name( ...$args );
 		}
 		// emulate default PHP behavior
 		trigger_error(
