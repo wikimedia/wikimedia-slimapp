@@ -27,7 +27,7 @@ use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
 /**
- * @coversDefaultClass \Wikimedia\Slimapp\Dao\AbstractDao
+ * @covers \Wikimedia\Slimapp\Dao\AbstractDao
  * @author Bryan Davis <bd808@wikimedia.org>
  * @copyright © 2015 Bryan Davis, Wikimedia Foundation and contributors.
  */

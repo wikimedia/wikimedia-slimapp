@@ -26,7 +26,7 @@ namespace Wikimedia\Slimapp;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @coversDefaultClass \Wikimedia\Slimapp\Form
+ * @covers \Wikimedia\Slimapp\Form
  * @uses \Wikimedia\Slimapp\Form
  * @author Bryan Davis <bd808@wikimedia.org>
  * @copyright © 2015 Bryan Davis, Wikimedia Foundation and contributors.
