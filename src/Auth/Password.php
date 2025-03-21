@@ -214,7 +214,7 @@ class Password {
 	 * be good enough.
 	 *
 	 * @param int $len Length of password desired
-	 * @param string $cs Symbol set to select password characters from
+	 * @param string|null $cs Symbol set to select password characters from
 	 * @return string Password
 	 */
 	public static function randomPassword( $len, $cs = null ) {

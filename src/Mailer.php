@@ -57,7 +57,7 @@ class Mailer {
 
 	/**
 	 * @param array $settings Configuration settings for PHPMailer
-	 * @param LoggerInterface $logger Log channel
+	 * @param LoggerInterface|null $logger Log channel
 	 */
 	public function __construct( $settings = [], $logger = null ) {
 		$this->logger = $logger ?: new NullLogger();
@@ -93,7 +93,7 @@ class Mailer {
 	/**
 	 * Create and configure a PHPMailer instance.
 	 *
-	 * @param array $settings Configuration settings
+	 * @param array|null $settings Configuration settings
 	 * @return PHPMailer New mailer configured with default, instance and local
 	 * settings
 	 */

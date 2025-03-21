@@ -57,7 +57,7 @@ class ParsoidClient {
 	/**
 	 * @param string $url URL to RESTBase /transform/wikitext/to/html API
 	 * @param string $cache Cache directory
-	 * @param LoggerInterface $logger Log channel
+	 * @param LoggerInterface|null $logger Log channel
 	 */
 	public function __construct( $url, $cache, $logger = null ) {
 		$this->logger = $logger ?: new NullLogger();

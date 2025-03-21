@@ -57,7 +57,7 @@ abstract class AbstractDao {
 	 * @param string $dsn PDO data source name
 	 * @param string $user Database user
 	 * @param string $pass Database password
-	 * @param LoggerInterface $logger Log channel
+	 * @param LoggerInterface|null $logger Log channel
 	 */
 	public function __construct( $dsn, $user, $pass, $logger = null ) {
 		$this->logger = $logger ?: new NullLogger();
@@ -171,7 +171,7 @@ abstract class AbstractDao {
 	 * Prepare and execute an SQL statement and return the first row of results.
 	 *
 	 * @param string $sql SQL
-	 * @param array $params Prepared statement parameters
+	 * @param array|null $params Prepared statement parameters
 	 * @return array First response row
 	 */
 	protected function fetch( $sql, $params = null ) {
@@ -185,7 +185,7 @@ abstract class AbstractDao {
 	 * Prepare and execute an SQL statement and return all results.
 	 *
 	 * @param string $sql SQL
-	 * @param array $params Prepared statement parameters
+	 * @param array|null $params Prepared statement parameters
 	 * @return array Result rows
 	 */
 	protected function fetchAll( $sql, $params = null ) {
@@ -205,7 +205,7 @@ abstract class AbstractDao {
 	 * dependent on MySQL's interpretation of the query.
 	 *
 	 * @param string $sql SQL
-	 * @param array $params Prepared statement parameters
+	 * @param array|null $params Prepared statement parameters
 	 * @return stdClass StdClass with rows and found members
 	 */
 	protected function fetchAllWithFound( $sql, $params = null ) {
@@ -222,7 +222,7 @@ abstract class AbstractDao {
 	 * Prepare and execute an SQL statement in a transaction.
 	 *
 	 * @param string $sql SQL
-	 * @param array $params Prepared statement parameters
+	 * @param array|null $params Prepared statement parameters
 	 * @return bool False if an exception was generated, true otherwise
 	 */
 	protected function update( $sql, $params = null ) {

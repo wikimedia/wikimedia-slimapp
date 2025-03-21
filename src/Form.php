@@ -74,7 +74,7 @@ class Form {
 	protected $errors = [];
 
 	/**
-	 * @param LoggerInterface $logger Log channel
+	 * @param LoggerInterface|null $logger Log channel
 	 */
 	public function __construct( $logger = null ) {
 		$this->logger = $logger ?: new NullLogger();
@@ -92,7 +92,7 @@ class Form {
 	 *
 	 * @param string $name Parameter to expect
 	 * @param int $filter Validation filter(s) to apply
-	 * @param array $options Validation options
+	 * @param array|null $options Validation options
 	 * @return Form Self, for message chaining
 	 */
 	public function expect( $name, $filter, $options = null ) {
@@ -140,7 +140,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to expect
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function expectBool( $name, $options = null ) {
@@ -153,7 +153,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to require
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function requireBool( $name, $options = null ) {
@@ -162,7 +162,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to expect
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function expectBoolArray( $name, $options = null ) {
@@ -171,7 +171,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to require
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function requireBoolArray( $name, $options = null ) {
@@ -180,7 +180,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to expect
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function expectTrue( $name, $options = null ) {
@@ -193,7 +193,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to require
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function requireTrue( $name, $options = null ) {
@@ -202,7 +202,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to expect
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function expectTrueArray( $name, $options = null ) {
@@ -211,7 +211,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to require
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function requireTrueArray( $name, $options = null ) {
@@ -220,7 +220,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to expect
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function expectEmail( $name, $options = null ) {
@@ -229,7 +229,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to require
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function requireEmail( $name, $options = null ) {
@@ -238,7 +238,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to expect
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function expectEmailArray( $name, $options = null ) {
@@ -247,7 +247,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to require
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function requireEmailArray( $name, $options = null ) {
@@ -256,7 +256,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to expect
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function expectFloat( $name, $options = null ) {
@@ -265,7 +265,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to require
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function requireFloat( $name, $options = null ) {
@@ -274,7 +274,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to expect
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function expectFloatArray( $name, $options = null ) {
@@ -283,7 +283,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to require
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function requireFloatArray( $name, $options = null ) {
@@ -292,7 +292,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to expect
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function expectInt( $name, $options = null ) {
@@ -301,7 +301,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to require
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function requireInt( $name, $options = null ) {
@@ -310,7 +310,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to expect
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function expectIntArray( $name, $options = null ) {
@@ -319,7 +319,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to require
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function requireIntArray( $name, $options = null ) {
@@ -328,7 +328,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to expect
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function expectIp( $name, $options = null ) {
@@ -337,7 +337,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to require
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function requireIp( $name, $options = null ) {
@@ -346,7 +346,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to expect
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function expectIpArray( $name, $options = null ) {
@@ -355,7 +355,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to require
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function requireIpArray( $name, $options = null ) {
@@ -365,7 +365,7 @@ class Form {
 	/**
 	 * @param string $name Parameter to expect
 	 * @param string $re Regular expression
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function expectRegex( $name, $re, $options = null ) {
@@ -377,7 +377,7 @@ class Form {
 	/**
 	 * @param string $name Parameter to require
 	 * @param string $re Regular expression
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function requireRegex( $name, $re, $options = null ) {
@@ -387,7 +387,7 @@ class Form {
 	/**
 	 * @param string $name Parameter to expect
 	 * @param string $re Regular expression
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function expectRegexArray( $name, $re, $options = null ) {
@@ -397,7 +397,7 @@ class Form {
 	/**
 	 * @param string $name Parameter to require
 	 * @param string $re Regular expression
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function requireRegexArray( $name, $re, $options = null ) {
@@ -406,7 +406,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to expect
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function expectUrl( $name, $options = null ) {
@@ -415,7 +415,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to require
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function requireUrl( $name, $options = null ) {
@@ -424,7 +424,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to expect
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function expectUrlArray( $name, $options = null ) {
@@ -433,7 +433,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to require
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function requireUrlArray( $name, $options = null ) {
@@ -442,7 +442,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to expect
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function expectString( $name, $options = null ) {
@@ -451,7 +451,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to require
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function requireString( $name, $options = null ) {
@@ -460,7 +460,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to expect
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function expectStringArray( $name, $options = null ) {
@@ -469,7 +469,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to require
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function requireStringArray( $name, $options = null ) {
@@ -478,7 +478,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to expect
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function expectAnything( $name, $options = null ) {
@@ -487,7 +487,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to require
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function requireAnything( $name, $options = null ) {
@@ -496,7 +496,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to expect
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function expectAnythingArray( $name, $options = null ) {
@@ -505,7 +505,7 @@ class Form {
 
 	/**
 	 * @param string $name Parameter to require
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function requireAnythingArray( $name, $options = null ) {
@@ -515,7 +515,7 @@ class Form {
 	/**
 	 * @param string $name Parameter to expect
 	 * @param array $valids Valid values
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function expectInArray( $name, $valids, $options = null ) {
@@ -530,7 +530,7 @@ class Form {
 	/**
 	 * @param string $name Parameter to require
 	 * @param array $valids Valid values
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function requireInArray( $name, $valids, $options = null ) {
@@ -542,7 +542,7 @@ class Form {
 	/**
 	 * @param string $name Parameter to expect
 	 * @param array $valids Valid values
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function expectInArrayArray( $name, $valids, $options = null ) {
@@ -554,7 +554,7 @@ class Form {
 	/**
 	 * @param string $name Parameter to require
 	 * @param array $valids Valid values
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function requireInArrayArray( $name, $valids, $options = null ) {
@@ -568,7 +568,7 @@ class Form {
 	 *
 	 * @param string $name Parameter to expect
 	 * @param string $format Expected date/time format
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 * @see DateTime::createFromFormat
 	 */
@@ -594,7 +594,7 @@ class Form {
 	/**
 	 * @param string $name Parameter to require
 	 * @param string $format Expected date/time format
-	 * @param array $options Additional options
+	 * @param array|null $options Additional options
 	 * @return Form Self, for message chaining
 	 */
 	public function requireDateTime( $name, $format, $options = null ) {
@@ -606,7 +606,7 @@ class Form {
 	/**
 	 * Validate the provided input data using this form's expectations.
 	 *
-	 * @param array $vars Input to validate (default $_POST)
+	 * @param array|null $vars Input to validate (default $_POST)
 	 * @return bool True if input is valid, false otherwise
 	 */
 	public function validate( $vars = null ) {

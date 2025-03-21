@@ -189,7 +189,7 @@ abstract class AbstractApp {
 	 * @param Slim $slim App
 	 * @param string $name Page name
 	 * @param string $to Redirect target route name
-	 * @param string $routeName Name for the route
+	 * @param string|null $routeName Name for the route
 	 */
 	public static function redirect(
 		Slim $slim, $name, $to, $routeName = null
@@ -206,7 +206,7 @@ abstract class AbstractApp {
 	 * Add a static template route to the app.
 	 * @param Slim $slim App
 	 * @param string $name Page name
-	 * @param string $routeName Name for the route
+	 * @param string|null $routeName Name for the route
 	 */
 	public static function template(
 		Slim $slim, $name, $routeName = null

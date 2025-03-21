@@ -13,13 +13,7 @@
 	<rule ref="MediaWiki.Usage.SuperGlobalsUsage.SuperGlobals">
 		<severity>0</severity>
 	</rule>
-	<rule ref="MediaWiki.Commenting.FunctionComment.MissingParamComment">
-		<severity>0</severity>
-	</rule>
 	<rule ref="MediaWiki.WhiteSpace.SpaceBeforeSingleLineComment.NewLineComment">
-		<severity>0</severity>
-	</rule>
-	<rule ref="MediaWiki.Commenting.FunctionComment.DefaultNullTypeParam">
 		<severity>0</severity>
 	</rule>
 	<rule ref="Generic.PHP.DeprecatedFunctions.Deprecated">
