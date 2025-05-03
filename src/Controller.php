@@ -64,7 +64,7 @@ class Controller {
 	/**
 	 * @param Slim|null $slim
 	 */
-	public function __construct( Slim $slim = null ) {
+	public function __construct( ?Slim $slim = null ) {
 		$this->slim = $slim ?: Slim::getInstance();
 		$this->form = new Form( $this->slim->log );
 	}

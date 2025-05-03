@@ -31,9 +31,9 @@
 		}
 	},
 	"require-dev": {
-		"mediawiki/mediawiki-codesniffer": "43.0.0",
+		"mediawiki/mediawiki-codesniffer": "46.0.0",
 		"php-parallel-lint/php-parallel-lint": "1.4.0",
-		"phpunit/phpunit": "9.6.16"
+		"phpunit/phpunit": "9.6.21"
 	},
 	"autoload-dev": {
 		"psr-4": {
