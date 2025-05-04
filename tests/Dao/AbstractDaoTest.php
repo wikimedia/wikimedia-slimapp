@@ -51,7 +51,7 @@ class AbstractDaoTest extends TestCase {
 		);
 	}
 
-	public function provideBuildWhere() {
+	public static function provideBuildWhere() {
 		return [
 			'empty' => [ [], 'AND', '' ],
 			'1 arg' => [ [ 'foo=bar' ], 'AND', 'WHERE (foo=bar) ' ],
@@ -81,7 +81,7 @@ class AbstractDaoTest extends TestCase {
 		);
 	}
 
-	public function provideBuildHaving() {
+	public static function provideBuildHaving() {
 		return [
 			'empty' => [ [], 'AND', '' ],
 			'1 arg' => [ [ 'foo=bar' ], 'AND', 'HAVING (foo=bar) ' ],

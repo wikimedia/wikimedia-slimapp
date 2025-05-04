@@ -176,7 +176,7 @@ class FormTest extends TestCase {
 		}
 	}
 
-	public function provideExpectDateTime() {
+	public static function provideExpectDateTime() {
 		return [
 			[ '2014-12-08', 'Y-m-d', true ],
 			[ '2014-12-08 23:02', 'Y-m-d H:i', true ],
