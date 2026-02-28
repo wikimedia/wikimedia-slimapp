@@ -9,7 +9,9 @@
 	<arg name="report" value="summary"/>
 	<arg value="sp"/>
 
-	<rule ref="./vendor/mediawiki/mediawiki-codesniffer/MediaWiki" />
+	<rule ref="./vendor/mediawiki/mediawiki-codesniffer/MediaWiki">
+		<exclude name="MediaWiki.Usage.ForbiddenFunctions.curl_close" />
+	</rule>
 	<rule ref="MediaWiki.Usage.SuperGlobalsUsage.SuperGlobals">
 		<severity>0</severity>
 	</rule>
