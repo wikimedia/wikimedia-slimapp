@@ -33,7 +33,7 @@
 	"require-dev": {
 		"mediawiki/mediawiki-codesniffer": "50.0.0",
 		"php-parallel-lint/php-parallel-lint": "1.4.0",
-		"phpunit/phpunit": "9.6.21"
+		"phpunit/phpunit": "9.6.34"
 	},
 	"autoload-dev": {
 		"psr-4": {
@@ -53,6 +53,14 @@
 	"config": {
 		"allow-plugins": {
 			"dealerdirect/phpcodesniffer-composer-installer": true
+		},
+		"audit": {
+			"ignore": [
+				"PKSA-yhcn-xrg3-68b1",
+				"PKSA-2wrf-1xmk-1pky",
+				"PKSA-6319-ffpf-gx66",
+				"PKSA-n7sg-8f52-pqtf"
+			]
 		}
 	}
 }
