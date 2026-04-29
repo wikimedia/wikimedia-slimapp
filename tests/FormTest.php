@@ -23,6 +23,7 @@
 
 namespace Wikimedia\Slimapp;
 
+use DateTime;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -164,7 +165,7 @@ class FormTest extends TestCase {
 			$this->assertTrue( $form->validate(), 'Form should be valid' );
 			$vals = $form->getValues();
 			$this->assertArrayHasKey( 'date', $vals );
-			$this->assertInstanceOf( 'DateTime', $vals['date'] );
+			$this->assertInstanceOf( DateTime::class, $vals['date'] );
 			$this->assertEquals( $input, $vals['date']->format( $format ) );
 			$this->assertNotContains( 'date', $form->getErrors() );
 		} else {
