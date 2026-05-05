@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3f94b2da1adaba81e4061f4aec3e957b",
+    "content-hash": "2d3042248867e44ab52fac85a6d3c542",
     "packages": [
         {
             "name": "bd808/monolog-udp2log-handler",
@@ -689,24 +689,24 @@
         },
         {
             "name": "composer/spdx-licenses",
-            "version": "1.5.10",
+            "version": "1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/spdx-licenses.git",
-                "reference": "e886f5201b27ad5bc3f9967b83394740722e5473"
+                "reference": "5ecd0cb4177696f9fd48f1605dda81db3dee7889"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/spdx-licenses/zipball/e886f5201b27ad5bc3f9967b83394740722e5473",
-                "reference": "e886f5201b27ad5bc3f9967b83394740722e5473",
+                "url": "https://api.github.com/repos/composer/spdx-licenses/zipball/5ecd0cb4177696f9fd48f1605dda81db3dee7889",
+                "reference": "5ecd0cb4177696f9fd48f1605dda81db3dee7889",
                 "shasum": ""
             },
             "require": {
-                "php": "^5.3.2 || ^7.0 || ^8.0"
+                "php": "^7.2 || ^8.0"
             },
             "require-dev": {
                 "phpstan/phpstan": "^1.11",
-                "symfony/phpunit-bridge": "^3 || ^7"
+                "symfony/phpunit-bridge": "^6.4.25 || ^7.3.3 || ^8.0"
             },
             "type": "library",
             "extra": {
@@ -749,7 +749,7 @@
             "support": {
                 "irc": "ircs://irc.libera.chat:6697/composer",
                 "issues": "https://github.com/composer/spdx-licenses/issues",
-                "source": "https://github.com/composer/spdx-licenses/tree/1.5.10"
+                "source": "https://github.com/composer/spdx-licenses/tree/1.6.0"
             },
             "funding": [
                 {
@@ -761,7 +761,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-04-08T20:11:16+00:00"
+            "time": "2026-04-08T20:18:39+00:00"
         },
         {
             "name": "dealerdirect/phpcodesniffer-composer-installer",
@@ -930,30 +930,29 @@
         },
         {
             "name": "mediawiki/mediawiki-codesniffer",
-            "version": "v50.0.0",
+            "version": "v51.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wikimedia/mediawiki-tools-codesniffer.git",
-                "reference": "8f8ba0099b59f26c908f8d3b299ba01fb9a0e1dc"
+                "reference": "d9f3595b7e9c73b1f725b0074ac04670c707211e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wikimedia/mediawiki-tools-codesniffer/zipball/8f8ba0099b59f26c908f8d3b299ba01fb9a0e1dc",
-                "reference": "8f8ba0099b59f26c908f8d3b299ba01fb9a0e1dc",
+                "url": "https://api.github.com/repos/wikimedia/mediawiki-tools-codesniffer/zipball/d9f3595b7e9c73b1f725b0074ac04670c707211e",
+                "reference": "d9f3595b7e9c73b1f725b0074ac04670c707211e",
                 "shasum": ""
             },
             "require": {
                 "composer/semver": "^3.4.2",
-                "composer/spdx-licenses": "~1.5.2",
-                "ext-json": "*",
+                "composer/spdx-licenses": "~1.5.2 || ~1.6.0",
                 "ext-mbstring": "*",
                 "php": ">=8.2.0",
-                "phpcsstandards/phpcsextra": "1.4.0",
+                "phpcsstandards/phpcsextra": "1.5.0",
                 "squizlabs/php_codesniffer": "3.13.5"
             },
             "require-dev": {
                 "ext-dom": "*",
-                "mediawiki/mediawiki-phan-config": "0.18.0",
+                "mediawiki/mediawiki-phan-config": "0.20.0",
                 "mediawiki/minus-x": "2.0.1",
                 "php-parallel-lint/php-console-highlighter": "1.0.0",
                 "php-parallel-lint/php-parallel-lint": "1.4.0",
@@ -976,9 +975,9 @@
                 "mediawiki"
             ],
             "support": {
-                "source": "https://github.com/wikimedia/mediawiki-tools-codesniffer/tree/v50.0.0"
+                "source": "https://github.com/wikimedia/mediawiki-tools-codesniffer/tree/v51.0.0"
             },
-            "time": "2026-02-10T11:49:03+00:00"
+            "time": "2026-05-03T06:29:24+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -1279,27 +1278,27 @@
         },
         {
             "name": "phpcsstandards/phpcsextra",
-            "version": "1.4.0",
+            "version": "1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHPCSExtra.git",
-                "reference": "fa4b8d051e278072928e32d817456a7fdb57b6ca"
+                "reference": "b598aa890815b8df16363271b659d73280129101"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHPCSExtra/zipball/fa4b8d051e278072928e32d817456a7fdb57b6ca",
-                "reference": "fa4b8d051e278072928e32d817456a7fdb57b6ca",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHPCSExtra/zipball/b598aa890815b8df16363271b659d73280129101",
+                "reference": "b598aa890815b8df16363271b659d73280129101",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.4",
-                "phpcsstandards/phpcsutils": "^1.1.0",
-                "squizlabs/php_codesniffer": "^3.13.0 || ^4.0"
+                "phpcsstandards/phpcsutils": "^1.2.0",
+                "squizlabs/php_codesniffer": "^3.13.5 || ^4.0.1"
             },
             "require-dev": {
                 "php-parallel-lint/php-console-highlighter": "^1.0",
                 "php-parallel-lint/php-parallel-lint": "^1.4.0",
-                "phpcsstandards/phpcsdevcs": "^1.1.6",
+                "phpcsstandards/phpcsdevcs": "^1.2.0",
                 "phpcsstandards/phpcsdevtools": "^1.2.1",
                 "phpunit/phpunit": "^4.5 || ^5.0 || ^6.0 || ^7.0 || ^8.0 || ^9.3.4"
             },
@@ -1357,7 +1356,7 @@
                     "type": "thanks_dev"
                 }
             ],
-            "time": "2025-06-14T07:40:39+00:00"
+            "time": "2025-11-12T23:06:57+00:00"
         },
         {
             "name": "phpcsstandards/phpcsutils",
@@ -3034,5 +3033,5 @@
         "php": ">=7.4"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.6.0"
 }
